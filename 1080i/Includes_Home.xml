@@ -311,7 +311,7 @@
             <texture colordiffuse="shadow_back">common/white.png</texture>
         </control>
         <control type="group">
-            <visible>!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
+            <visible>true</visible>
             <include content="Animation_ConditionalFade">
                 <param name="condition">Window.IsVisible(1105)</param>
             </include>
