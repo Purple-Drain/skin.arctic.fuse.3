@@ -1,0 +1,10 @@
+<favourites>
+    <!-- Each entry launches an installed Android app by package name.
+         Find package names with:  adb shell pm list packages -3
+         Optional extra args: StartAndroidActivity(package,[intent],[dataType],[dataURI]) -->
+    <favourite name="Netflix">StartAndroidActivity("com.netflix.ninja")</favourite>
+    <favourite name="YouTube">StartAndroidActivity("com.google.android.youtube.tv")</favourite>
+    <favourite name="Prime Video">StartAndroidActivity("com.amazon.amazonvideo.livingroom")</favourite>
+    <favourite name="Disney+">StartAndroidActivity("com.disney.disneyplus")</favourite>
+    <favourite name="Plex">StartAndroidActivity("com.plexapp.android")</favourite>
+</favourites>
