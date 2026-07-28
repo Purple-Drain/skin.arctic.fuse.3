@@ -251,6 +251,17 @@
         </control>
     </include>
 
+    <!-- FixedHeader: give the hub plot a real auto-scrolling textbox sized to ~3 lines.
+         A textbox only animates when text overflows, so a taller box scrolls less often
+         (better perf + readability). Default OFF / non-FixedHeader keeps upstream 80px+fakebox.
+         NB: the outer reserved height is passed as a LITERAL at the Hub_Combined_Info call
+         (plotheight=150), not a $VAR — a $VAR doesn't resolve in Info_Plot_Main's parse-time
+         <height>. See that call site and the episode-leaf note in Includes_Info.xml. -->
+    <variable name="Hub_Info_Plot_Box">
+        <value condition="Skin.HasSetting(HomeSwitcher.FixedHeader) + !Skin.HasSetting(HomeSwitcher.Vertical)">110</value>
+        <value>80</value>
+    </variable>
+
     <include name="Hub_Combined_Info">
         <control type="group">
             <animation effect="fade" start="0" end="100" delay="399" time="1" condition="!$EXP[Hub_Spotlight_Visible_Expression]">Conditional</animation>
@@ -281,6 +292,14 @@
                     <param name="visible_meta">true</param>
                     <param name="include_title">false</param>
                     <param name="container">Container($PARAM[id]).</param>
+                    <param name="use_textbox">[Skin.HasSetting(HomeSwitcher.FixedHeader) + !Skin.HasSetting(HomeSwitcher.Vertical)] | Skin.HasSetting(Textboxes.DisableFakeBox)</param>
+                    <!-- Literal, not $VAR: this lands in Info_Plot_Main's group <height>,
+                         which resolves at parse time — $VAR evaluates to nothing there and
+                         collapses the group to 0, so the meta line draws over the tagline
+                         (proven on-device, shots 069 vs 074). 150 reserves tagline+plot and
+                         clears the meta. Mirrors the episode-leaf literal fix in 5a67ebf. -->
+                    <param name="plotheight">150</param>
+                    <param name="episodeplotheight">$VAR[Hub_Info_Plot_Box]</param>
                 </include>
             </control>
         </control>
@@ -745,6 +764,9 @@
 
                         <!-- Content -->
                         <control type="group" id="400">
+                            <!-- HomeSwitcher.FixedHeader ON: reserve the top-menu band so hub
+                                 content sits below the pinned menu. OFF = upstream (no slide). -->
+                            <animation effect="slide" start="0" end="0,140" time="0" condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(HomeSwitcher.FixedHeader)" reversible="false">Conditional</animation>
                             <include>Animation_View_WindowChange</include>
 
                             <!-- Spotlight -->
@@ -775,9 +797,17 @@
                         </control>
 
                         <!-- Info Panels -->
-                        <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Wall)">skinvariables-$PARAM[window]widgets-wall-info</include>
-                        <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Combined) | String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Standard)">skinvariables-$PARAM[window]widgets-combined-info</include>
-                        <include condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">Hub_Spotlight_Info</include>
+                        <!-- HomeSwitcher.FixedHeader: keep the info block below the pinned menu.
+                             +200 exactly cancels Home_Slide_Animation's -200 on the logo (same
+                             delay/time/tween) so the logo stays put — consistent position, no
+                             wiggle — while the details ride down to sit below it. -->
+                        <control type="group">
+                            <animation effect="slide" start="0,130" end="0,-70" time="400" tween="cubic" easing="out" condition="$EXP[Exp_Hubs_SlideInfo] + !Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(HomeSwitcher.FixedHeader)" reversible="false">Conditional</animation>
+                            <animation effect="slide" start="0,-70" end="0,130" time="400" delay="100" tween="cubic" easing="out" condition="!$EXP[Exp_Hubs_SlideInfo] + !Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(HomeSwitcher.FixedHeader)" reversible="false">Conditional</animation>
+                            <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Wall)">skinvariables-$PARAM[window]widgets-wall-info</include>
+                            <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Combined) | String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Standard)">skinvariables-$PARAM[window]widgets-combined-info</include>
+                            <include condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">Hub_Spotlight_Info</include>
+                        </control>
                     </control>
                     <include content="Hub_VertMenu" condition="Skin.HasSetting(HomeSwitcher.Vertical)">
                         <param name="window">$PARAM[window]</param>

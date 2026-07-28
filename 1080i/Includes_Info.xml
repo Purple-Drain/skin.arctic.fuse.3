@@ -880,10 +880,12 @@
             <visible>$PARAM[visible]</visible>
             <visible>String.IsEqual($PARAM[container]$PARAM[listitem].DBType,episode) | $PARAM[override]</visible>
             <!-- Fixed reserved height (title ~40 + plot box). Must be a literal: this group's
-                 <height> is resolved at parse time, so $VAR is ignored and $PARAM[height]
-                 arrives empty here (Info_Panel forwards a plotheight it never declares),
-                 collapsing the group to 0 and letting the grouplist draw the meta line on
-                 top of the episode title. A literal guarantees the meta line clears it. -->
+                 <height> is resolved at PARSE time. The hub caller passes the plot height as a
+                 $VAR (Hub_Combined_Info -> episodeplotheight=$VAR[Hub_Info_Plot_Box]), and a
+                 $VAR does not evaluate inside a parse-time <height> — it arrives unresolved, so
+                 the group collapses to 0 and the grouplist draws the meta line on top of the
+                 episode title. Proven on-device: only a literal here takes effect (a $VAR, or a
+                 $PARAM carrying a $VAR, does not). A literal guarantees the meta clears it. -->
             <height>124</height>
             <control type="group">
                 <visible>[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]</visible>
@@ -909,10 +911,9 @@
                     <param name="label">$INFO[$PARAM[container]$PARAM[listitem].Plot]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                     <!-- Force the real textbox (not the fakebox label) so the episode plot
-                         renders in every fake-textbox setting. $PARAM[use_textbox] arrives
-                         empty here (undeclared-param chain from Info_Panel), which otherwise
-                         drops the plot into the fakebox path and hides it when fake labels
-                         are ON. episodeplotheight (110/80) + top 40 fits the 150 group. -->
+                         renders in every fake-textbox setting. Without forcing it, the plot
+                         drops into the fakebox path and is hidden when fake labels are ON.
+                         Height/top are literals to fit the fixed group height above. -->
                     <param name="use_textbox">true</param>
                     <param name="height">78</param>
                     <param name="width">760</param>
