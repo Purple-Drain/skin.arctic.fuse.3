@@ -879,7 +879,12 @@
         <control type="group">
             <visible>$PARAM[visible]</visible>
             <visible>String.IsEqual($PARAM[container]$PARAM[listitem].DBType,episode) | $PARAM[override]</visible>
-            <height>$PARAM[height]</height>
+            <!-- Fixed reserved height (title ~40 + plot box). Must be a literal: this group's
+                 <height> is resolved at parse time, so $VAR is ignored and $PARAM[height]
+                 arrives empty here (Info_Panel forwards a plotheight it never declares),
+                 collapsing the group to 0 and letting the grouplist draw the meta line on
+                 top of the episode title. A literal guarantees the meta line clears it. -->
+            <height>124</height>
             <control type="group">
                 <visible>[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]</visible>
                 <control type="label">
@@ -903,10 +908,15 @@
                 <include content="Info_Plot_TextBox">
                     <param name="label">$INFO[$PARAM[container]$PARAM[listitem].Plot]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
-                    <param name="use_textbox">$PARAM[use_textbox]</param>
-                    <param name="height">80</param>
-                    <param name="width">$PARAM[width]</param>
-                    <param name="top">40</param>
+                    <!-- Force the real textbox (not the fakebox label) so the episode plot
+                         renders in every fake-textbox setting. $PARAM[use_textbox] arrives
+                         empty here (undeclared-param chain from Info_Panel), which otherwise
+                         drops the plot into the fakebox path and hides it when fake labels
+                         are ON. episodeplotheight (110/80) + top 40 fits the 150 group. -->
+                    <param name="use_textbox">true</param>
+                    <param name="height">78</param>
+                    <param name="width">760</param>
+                    <param name="top">46</param>
                 </include>
             </control>
             <control type="group">
@@ -914,9 +924,9 @@
                 <include content="Info_Plot_TextBox">
                     <param name="label">$INFO[$PARAM[container]$PARAM[listitem].Plot]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
-                    <param name="use_textbox">$PARAM[use_textbox]</param>
-                    <param name="height">$PARAM[height]</param>
-                    <param name="width">$PARAM[width]</param>
+                    <param name="use_textbox">true</param>
+                    <param name="height">150</param>
+                    <param name="width">760</param>
                 </include>
             </control>
         </control>
@@ -1087,6 +1097,7 @@
         <param name="visible">true</param>
         <param name="listitem">ListItem</param>
         <param name="height">120</param>
+        <param name="episodeplotheight">80</param>
         <param name="include_main">true</param>
         <param name="include_episode">true</param>
         <param name="include_other">true</param>
@@ -1102,6 +1113,7 @@
                 <param name="colordiffuse">$PARAM[colordiffuse]</param>
                 <param name="width">$PARAM[width]</param>
                 <param name="height">$PARAM[height]</param>
+                <param name="episodeplotheight">$PARAM[episodeplotheight]</param>
                 <param name="override">$PARAM[override]</param>
                 <param name="visible">$PARAM[visible]</param>
             </include>
@@ -1146,6 +1158,7 @@
         <param name="colordiffuse">main_fg</param>
         <param name="plotwidth">800</param>
         <param name="plotaligny">center</param>
+        <param name="episodeplotheight">80</param>
         <param name="visible">true</param>
         <param name="visible_line">true</param>
         <param name="visible_plot">true</param>
@@ -1193,6 +1206,7 @@
                     <param name="listitem">$PARAM[listitem]</param>
                     <param name="width">$PARAM[plotwidth]</param>
                     <param name="height">$PARAM[plotheight]</param>
+                    <param name="episodeplotheight">$PARAM[episodeplotheight]</param>
                     <param name="visible">$PARAM[visible_plot]</param>
                     <param name="use_textbox">$PARAM[use_textbox]</param>
                 </include>
