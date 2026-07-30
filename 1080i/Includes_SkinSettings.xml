@@ -107,6 +107,28 @@
             <label2>$VAR[Label_Setting_Spotlight_UseMenuButton]</label2>
             <onclick>Skin.ToggleSetting(Spotlight.UseMenuButton)</onclick>
         </include>
+        <include content="Settings_Button" description="Search Standard Hub Menu">
+            <param name="dialog">false</param>
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">012</param>
+            <param name="control">radiobutton</param>
+            <label>$LOCALIZE[31606]</label>
+            <selected>Skin.HasSetting(Search.StandardHubMenu)</selected>
+            <onclick>Skin.ToggleSetting(Search.StandardHubMenu)</onclick>
+            <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
+        </include>
+        <include content="Settings_Button" description="Home Menu Fixed Header">
+            <param name="dialog">false</param>
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">013</param>
+            <param name="control">radiobutton</param>
+            <label>$LOCALIZE[31607]</label>
+            <selected>Skin.HasSetting(HomeSwitcher.FixedHeader)</selected>
+            <onclick>Skin.ToggleSetting(HomeSwitcher.FixedHeader)</onclick>
+            <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
+        </include>
     </include>
 
     <!-- Appearance -->
