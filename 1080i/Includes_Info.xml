@@ -876,17 +876,21 @@
     </include>
 
     <include name="Info_Plot_Episode">
+        <!-- Reserved height = title 40 + 6px gap + episode_box_h. Both MUST resolve to a literal:
+             this group's <height> is resolved at PARSE time, so a $VAR arrives unresolved, the
+             group collapses to 0, and the grouplist draws the meta line on top of the episode
+             title. A $PARAM carrying a LITERAL does resolve here — that distinction is why the
+             old episodeplotheight param was inert (callers passed it a $VAR) and why these two
+             work. Defaults reproduce the previous hardcoded 124/78 exactly, so callers that pass
+             nothing — notably the video OSD via Includes_OSD.xml — are unchanged. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
+        <definition>
         <control type="group">
             <visible>$PARAM[visible]</visible>
             <visible>String.IsEqual($PARAM[container]$PARAM[listitem].DBType,episode) | $PARAM[override]</visible>
-            <!-- Fixed reserved height (title ~40 + plot box). Must be a literal: this group's
-                 <height> is resolved at PARSE time, so a $VAR arrives unresolved, the group
-                 collapses to 0, and the grouplist draws the meta line on top of the episode
-                 title. Proven on-device: only a literal here takes effect (a $VAR, or a $PARAM
-                 carrying a $VAR, does not). A literal guarantees the meta clears it. That is
-                 why this height is not caller-configurable — an earlier episodeplotheight param
-                 existed for that and could never have worked; it was removed as dead. -->
-            <height>124</height>
+            <height>$PARAM[episode_group_h]</height>
             <control type="group">
                 <visible>[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]</visible>
                 <control type="label">
@@ -913,24 +917,29 @@
                     <!-- Force the real textbox (not the fakebox label) so the episode plot
                          renders in every fake-textbox setting. Without forcing it, the plot
                          drops into the fakebox path and is hidden when fake labels are ON.
-                         Height/top are literals to fit the fixed group height above. -->
+                         top 46 clears the 40px title + 6px gap; height must leave
+                         46 + episode_box_h == episode_group_h. -->
                     <param name="use_textbox">true</param>
-                    <param name="height">78</param>
+                    <param name="height">$PARAM[episode_box_h]</param>
                     <param name="width">760</param>
                     <param name="top">46</param>
                 </include>
             </control>
             <control type="group">
                 <visible>![[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]]</visible>
+                <!-- No SxE/title in this branch, so the plot takes the whole block. Kept as its
+                     own param because the previous literal (150) deliberately exceeded the 124
+                     group height; folding it into episode_group_h would silently shrink it. -->
                 <include content="Info_Plot_TextBox">
                     <param name="label">$INFO[$PARAM[container]$PARAM[listitem].Plot]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                     <param name="use_textbox">true</param>
-                    <param name="height">150</param>
+                    <param name="height">$PARAM[episode_notitle_box_h]</param>
                     <param name="width">760</param>
                 </include>
             </control>
         </control>
+        </definition>
     </include>
 
     <include name="Info_Plot_Main_Plotline_Content">
@@ -1103,6 +1112,13 @@
         <param name="include_other">true</param>
         <param name="override">false</param>
         <param name="aligny">center</param>
+        <!-- Declared, not just forwarded. Kodi forwards $PARAM[x] unconditionally, so an include
+             that passes a param it never declares sends an EMPTY value downstream, which overrides
+             the leaf's own default instead of falling back to it. That is the long-standing bug
+             behind plotheight here. These three must therefore carry the leaf defaults verbatim. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
         <definition>
 
             <!-- EPISODES -->
@@ -1115,6 +1131,9 @@
                 <param name="height">$PARAM[height]</param>
                 <param name="override">$PARAM[override]</param>
                 <param name="visible">$PARAM[visible]</param>
+                <param name="episode_group_h">$PARAM[episode_group_h]</param>
+                <param name="episode_box_h">$PARAM[episode_box_h]</param>
+                <param name="episode_notitle_box_h">$PARAM[episode_notitle_box_h]</param>
             </include>
 
             <!-- MAIN -->
@@ -1153,7 +1172,13 @@
     <include name="Info_Panel">
         <param name="container" />
         <param name="include_title">true</param>
+        <param name="title_spacer_h">info_title_h</param>
         <param name="include_details">true</param>
+        <!-- Declared so forwarding them below cannot deliver an empty value that overrides the
+             leaf defaults — see the note in Info_Plot. Callers that say nothing get 124/78/150. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
         <param name="colordiffuse">main_fg</param>
         <param name="plotwidth">800</param>
         <param name="plotaligny">center</param>
@@ -1184,9 +1209,14 @@
                     <param name="service">$PARAM[service]</param>
                     <param name="croplogo">$PARAM[croplogo]</param>
                 </include>
+                <!-- Blank stand-in for the logo when the caller draws it elsewhere. Defaults to
+                     info_title_h so every existing caller is unchanged; a caller that has moved
+                     the logo out of this column passes title_spacer_h=0 to reclaim the space.
+                     Must be a literal or a $PARAM carrying one — this <height> resolves at parse
+                     time, where a $VAR evaluates to nothing and collapses the group. -->
                 <include content="Object_Control" condition="![$PARAM[include_title]]">
                     <param name="control">group</param>
-                    <height>info_title_h</height>
+                    <height>$PARAM[title_spacer_h]</height>
                 </include>
 
                 <!-- Info -->
@@ -1206,6 +1236,9 @@
                     <param name="height">$PARAM[plotheight]</param>
                     <param name="visible">$PARAM[visible_plot]</param>
                     <param name="use_textbox">$PARAM[use_textbox]</param>
+                    <param name="episode_group_h">$PARAM[episode_group_h]</param>
+                    <param name="episode_box_h">$PARAM[episode_box_h]</param>
+                    <param name="episode_notitle_box_h">$PARAM[episode_notitle_box_h]</param>
                 </include>
 
                 <!-- Meta -->
