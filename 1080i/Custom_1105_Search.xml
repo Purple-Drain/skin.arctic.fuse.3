@@ -9,6 +9,8 @@
         <param name="window_id">1105</param>
     </include>
 
+    <onload condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)">SetFocus(3001)</onload>
+
     <controls>
         <include>Search</include>
     </controls>
