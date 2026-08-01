@@ -311,9 +311,11 @@
             <texture colordiffuse="shadow_back">common/white.png</texture>
         </control>
         <control type="group">
-            <visible>true</visible>
+            <!-- OFF (default) = upstream: menu hides when widgets clear HomeSwitcher.IsVisible.
+                 Pinned only when FixedHeader is on (any hub) or the Search standard-hub feature. -->
+            <visible>!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) | Skin.HasSetting(HomeSwitcher.FixedHeader) | [Window.IsVisible(1105) + Skin.HasSetting(Search.StandardHubMenu)]</visible>
             <include content="Animation_ConditionalFade">
-                <param name="condition">Window.IsVisible(1105)</param>
+                <param name="condition">Window.IsVisible(1105) + !Skin.HasSetting(Search.StandardHubMenu)</param>
             </include>
             <include>Home_Animation</include>
             <include content="Furniture_Header" condition="!Skin.HasSetting(HomeSwitcher.DisableHeader)">
@@ -326,10 +328,26 @@
                     <visible>!Skin.HasSetting(HomeSwitcher.DisableSearch)</visible>
                     <left>-20</left>
                     <width>80</width>
+                    <!-- Circle + selected icon when Search hub is active and menu is focused (mirrors Home_Focus_Faker icon mode) -->
+                    <control type="group">
+                        <visible>Control.HasFocus(300) + Window.IsVisible(1105) + !String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
+                        <control type="image">
+                            <include>Texture_Menu_Highlight_H</include>
+                        </control>
+                        <control type="image">
+                            <include>Home_Grouplist_Icon_Definition</include>
+                            <texture background="true" colordiffuse="$VAR[ColorSelected]">special://skin/extras/icons/search.png</texture>
+                        </control>
+                    </control>
                     <control type="image">
                         <include>Home_Grouplist_Icon_Definition</include>
                         <texture background="true" colordiffuse="main_fg_30">special://skin/extras/icons/search.png</texture>
-                        <visible>!Control.HasFocus(300)</visible>
+                        <visible>!Control.HasFocus(300) + [!Window.IsVisible(1105) | !Skin.HasSetting(Search.StandardHubMenu)]</visible>
+                    </control>
+                    <control type="image">
+                        <include>Home_Grouplist_Icon_Definition</include>
+                        <texture background="true" colordiffuse="main_fg_100">special://skin/extras/icons/search.png</texture>
+                        <visible>!Control.HasFocus(300) + Window.IsVisible(1105) + Skin.HasSetting(Search.StandardHubMenu)</visible>
                     </control>
                 </control>
                 <control type="grouplist">
@@ -497,7 +515,7 @@
                 <param name="window">1108</param>
                 <param name="id">3108</param>
             </include>
-            <include condition="!$EXP[Exp_Hubs_Menu_Loopback]">Home_Settings_Button</include>
+            <include condition="!$EXP[Exp_Hubs_Menu_Loopback] + [!Window.IsVisible(1105) | !Skin.HasSetting(Search.StandardHubMenu)]">Home_Settings_Button</include>
             <control type="group">
                 <width>0</width>
             </control>
@@ -646,15 +664,31 @@
                         <textcolor>main_fg_30</textcolor>
                         <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
                         <left>30</left>
-                        <visible>![$PARAM[use_icons]]</visible>
+                        <visible>![$PARAM[use_icons]] + ![Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))]</visible>
+                    </control>
+                    <control type="label">
+                        <font>font_main_bold</font>
+                        <textcolor>main_fg_100</textcolor>
+                        <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
+                        <left>30</left>
+                        <visible>![$PARAM[use_icons]] + Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
                     </control>
                     <control type="group">
                         <left>10</left>
                         <width>80</width>
-                        <visible>$PARAM[use_icons]</visible>
+                        <visible>$PARAM[use_icons] + ![Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))]</visible>
                         <control type="image">
                             <include>Home_Grouplist_Icon_Definition</include>
                             <texture background="true" colordiffuse="main_fg_30">$VAR[Home_Icon_$PARAM[window]]</texture>
+                        </control>
+                    </control>
+                    <control type="group">
+                        <left>10</left>
+                        <width>80</width>
+                        <visible>$PARAM[use_icons] + Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
+                        <control type="image">
+                            <include>Home_Grouplist_Icon_Definition</include>
+                            <texture background="true" colordiffuse="main_fg_100">$VAR[Home_Icon_$PARAM[window]]</texture>
                         </control>
                     </control>
                 </control>
@@ -684,7 +718,7 @@
                 <top>100</top>
                 <height>80</height>
                 <control type="group">
-                    <visible>Window.IsVisible($PARAM[window])</visible>
+                    <visible>Window.IsVisible($PARAM[window]) + !String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
                     <control type="button">
                         <font>font_main_bold</font>
                         <textcolor>00ffffff</textcolor>

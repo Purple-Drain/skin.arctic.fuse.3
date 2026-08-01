@@ -5,7 +5,7 @@
     <controls>
         <control type="group">
             <include>Animation_Group_Bumper</include>
-            <include condition="!Skin.HasSetting(HomeSwitcher.Vertical)">Home_Switcher_Horz</include>
+<include condition="!Skin.HasSetting(HomeSwitcher.Vertical)">Home_Switcher_Horz</include>
             <include condition="Skin.HasSetting(HomeSwitcher.Vertical)">Home_Switcher_Vert</include>
         </control>
     </controls>

@@ -11,7 +11,8 @@
             <include content="Home_Control">
                 <param name="window">$PARAM[window]</param>
                 <param name="overlay">[false]</param>
-                <onfocus condition="!Skin.HasSetting(HomeSwitcher.Vertical)">SetFocus(3001)</onfocus>
+                <onfocus condition="!Skin.HasSetting(HomeSwitcher.Vertical) + !Skin.HasSetting(Search.StandardHubMenu)">SetFocus(3001)</onfocus>
+                <ondown condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)">3000</ondown>
             </include>
 
             <control type="group">
@@ -23,6 +24,10 @@
 
                     <!-- Content -->
                     <control type="group" id="400">
+
+                        <!-- Search.StandardHubMenu ON: reserve the ~130px top-menu strip slot so content
+                             sits below the pinned menu instead of under it. OFF = upstream (no slide). -->
+                        <animation effect="slide" start="0" end="0,130" time="0" condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)" reversible="false">Conditional</animation>
 
                         <control type="group">
                             <visible allowhiddenfocus="true">String.IsEmpty(Window.Property(Searchbar.IsHidden)) + !Window.IsActive(DialogKeyboard.xml)</visible>
@@ -39,7 +44,9 @@
                                 <include condition="!Skin.HasSetting(HomeSwitcher.Vertical)">Home_Switcher_Right_Buttons</include>
                             </control>
 
-                            <include content="Furniture_Header" condition="!Skin.HasSetting(HomeSwitcher.DisableHeader) + !Skin.HasSetting(HomeSwitcher.Vertical)">
+                            <!-- Search.StandardHubMenu ON: the pinned 1182 menu strip provides the header,
+                                 so suppress Search's own header to avoid a double header. OFF = upstream. -->
+                            <include content="Furniture_Header" condition="!Skin.HasSetting(HomeSwitcher.DisableHeader) + !Skin.HasSetting(HomeSwitcher.Vertical) + !Skin.HasSetting(Search.StandardHubMenu) + !Skin.HasSetting(HomeSwitcher.FixedHeader)">
                                 <param name="label">$VAR[Home_Header_Label]</param>
                             </include>
                         </control>
@@ -278,10 +285,11 @@
             <onright condition="Skin.HasSetting(HomeSwitcher.Vertical)">ActivateWindow(1180)</onright>
 
 
-            <onleft condition="!Skin.HasSetting(HomeSwitcher.Vertical)">$INFO[Container(399).ListItem(-1).Property(action)]</onleft>
-            <onright condition="!Skin.HasSetting(HomeSwitcher.Vertical)">$INFO[Container(399).ListItem(1).Property(action)]</onright>
+            <onleft condition="!Skin.HasSetting(HomeSwitcher.Vertical) + !Skin.HasSetting(Search.StandardHubMenu)">$INFO[Container(399).ListItem(-1).Property(action)]</onleft>
+            <onright condition="!Skin.HasSetting(HomeSwitcher.Vertical) + !Skin.HasSetting(Search.StandardHubMenu)">$INFO[Container(399).ListItem(1).Property(action)]</onright>
 
-            <onup condition="!Skin.HasSetting(Search.DisableDiscover) + !Skin.HasSetting(Search.DisableCombined)">RunPlugin(plugin://plugin.video.themoviedb.helper/?info=user_discover$INFO[Window(Home).Property(TMDbHelper.UserDiscover.Folderpath.ParamString),&amp;,])</onup>
+            <onup condition="!Skin.HasSetting(Search.DisableDiscover) + !Skin.HasSetting(Search.DisableCombined) + !Skin.HasSetting(Search.StandardHubMenu)">RunPlugin(plugin://plugin.video.themoviedb.helper/?info=user_discover$INFO[Window(Home).Property(TMDbHelper.UserDiscover.Folderpath.ParamString),&amp;,])</onup>
+            <onup condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)">300</onup>
             <ondown>301</ondown>
 
             <texturefocus />

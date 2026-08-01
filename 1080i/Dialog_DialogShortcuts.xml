@@ -684,6 +684,16 @@
                 <visible>$PARAM[enabled]</visible>
                 <visible>$PARAM[visible]</visible>
             </include>
+            <include content="Settings_Button" description="Search Standard Hub Menu">
+                <param name="control">radiobutton</param>
+                <param name="id">9407</param>
+                <label>$LOCALIZE[31606]</label>
+                <selected>Skin.HasSetting(Search.StandardHubMenu)</selected>
+                <onclick>Skin.ToggleSetting(Search.StandardHubMenu)</onclick>
+                <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
+                <visible>$PARAM[enabled]</visible>
+                <visible>$PARAM[visible]</visible>
+            </include>
         </definition>
     </include>
 

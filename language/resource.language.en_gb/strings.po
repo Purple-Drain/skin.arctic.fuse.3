@@ -2318,3 +2318,13 @@ msgstr ""
 msgctxt "#31605"
 msgid "Next aired"
 msgstr ""
+
+#: /1080i/Includes_SkinSettings.xml
+msgctxt "#31606"
+msgid "Search: standard hub menu"
+msgstr ""
+
+#: /1080i/Includes_SkinSettings.xml
+msgctxt "#31607"
+msgid "Home menu: fixed header"
+msgstr ""
