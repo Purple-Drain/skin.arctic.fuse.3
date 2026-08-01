@@ -251,17 +251,6 @@
         </control>
     </include>
 
-    <!-- FixedHeader: give the hub plot a real auto-scrolling textbox sized to ~3 lines.
-         A textbox only animates when text overflows, so a taller box scrolls less often
-         (better perf + readability). Default OFF / non-FixedHeader keeps upstream 80px+fakebox.
-         NB: the outer reserved height is passed as a LITERAL at the Hub_Combined_Info call
-         (plotheight=150), not a $VAR — a $VAR doesn't resolve in Info_Plot_Main's parse-time
-         <height>. See that call site and the episode-leaf note in Includes_Info.xml. -->
-    <variable name="Hub_Info_Plot_Box">
-        <value condition="Skin.HasSetting(HomeSwitcher.FixedHeader) + !Skin.HasSetting(HomeSwitcher.Vertical)">110</value>
-        <value>80</value>
-    </variable>
-
     <include name="Hub_Combined_Info">
         <control type="group">
             <animation effect="fade" start="0" end="100" delay="399" time="1" condition="!$EXP[Hub_Spotlight_Visible_Expression]">Conditional</animation>
@@ -299,7 +288,6 @@
                          (proven on-device, shots 069 vs 074). 150 reserves tagline+plot and
                          clears the meta. Mirrors the episode-leaf literal fix in 5a67ebf. -->
                     <param name="plotheight">150</param>
-                    <param name="episodeplotheight">$VAR[Hub_Info_Plot_Box]</param>
                 </include>
             </control>
         </control>

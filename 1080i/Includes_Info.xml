@@ -880,12 +880,12 @@
             <visible>$PARAM[visible]</visible>
             <visible>String.IsEqual($PARAM[container]$PARAM[listitem].DBType,episode) | $PARAM[override]</visible>
             <!-- Fixed reserved height (title ~40 + plot box). Must be a literal: this group's
-                 <height> is resolved at PARSE time. The hub caller passes the plot height as a
-                 $VAR (Hub_Combined_Info -> episodeplotheight=$VAR[Hub_Info_Plot_Box]), and a
-                 $VAR does not evaluate inside a parse-time <height> — it arrives unresolved, so
-                 the group collapses to 0 and the grouplist draws the meta line on top of the
-                 episode title. Proven on-device: only a literal here takes effect (a $VAR, or a
-                 $PARAM carrying a $VAR, does not). A literal guarantees the meta clears it. -->
+                 <height> is resolved at PARSE time, so a $VAR arrives unresolved, the group
+                 collapses to 0, and the grouplist draws the meta line on top of the episode
+                 title. Proven on-device: only a literal here takes effect (a $VAR, or a $PARAM
+                 carrying a $VAR, does not). A literal guarantees the meta clears it. That is
+                 why this height is not caller-configurable — an earlier episodeplotheight param
+                 existed for that and could never have worked; it was removed as dead. -->
             <height>124</height>
             <control type="group">
                 <visible>[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]</visible>
@@ -1098,7 +1098,6 @@
         <param name="visible">true</param>
         <param name="listitem">ListItem</param>
         <param name="height">120</param>
-        <param name="episodeplotheight">80</param>
         <param name="include_main">true</param>
         <param name="include_episode">true</param>
         <param name="include_other">true</param>
@@ -1114,7 +1113,6 @@
                 <param name="colordiffuse">$PARAM[colordiffuse]</param>
                 <param name="width">$PARAM[width]</param>
                 <param name="height">$PARAM[height]</param>
-                <param name="episodeplotheight">$PARAM[episodeplotheight]</param>
                 <param name="override">$PARAM[override]</param>
                 <param name="visible">$PARAM[visible]</param>
             </include>
@@ -1159,7 +1157,6 @@
         <param name="colordiffuse">main_fg</param>
         <param name="plotwidth">800</param>
         <param name="plotaligny">center</param>
-        <param name="episodeplotheight">80</param>
         <param name="visible">true</param>
         <param name="visible_line">true</param>
         <param name="visible_plot">true</param>
@@ -1207,7 +1204,6 @@
                     <param name="listitem">$PARAM[listitem]</param>
                     <param name="width">$PARAM[plotwidth]</param>
                     <param name="height">$PARAM[plotheight]</param>
-                    <param name="episodeplotheight">$PARAM[episodeplotheight]</param>
                     <param name="visible">$PARAM[visible_plot]</param>
                     <param name="use_textbox">$PARAM[use_textbox]</param>
                 </include>
