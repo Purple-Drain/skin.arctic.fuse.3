@@ -27,7 +27,7 @@
 
                         <!-- Search.StandardHubMenu ON: reserve the ~130px top-menu strip slot so content
                              sits below the pinned menu instead of under it. OFF = upstream (no slide). -->
-                        <animation effect="slide" start="0" end="0,130" time="0" condition="!Skin.HasSetting(HomeSwitcher.Vertical) + [Skin.HasSetting(Search.StandardHubMenu) | Skin.HasSetting(HomeSwitcher.FixedHeader)]" reversible="false">Conditional</animation>
+                        <animation effect="slide" start="0" end="0,130" time="0" condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)" reversible="false">Conditional</animation>
 
                         <control type="group">
                             <visible allowhiddenfocus="true">String.IsEmpty(Window.Property(Searchbar.IsHidden)) + !Window.IsActive(DialogKeyboard.xml)</visible>
