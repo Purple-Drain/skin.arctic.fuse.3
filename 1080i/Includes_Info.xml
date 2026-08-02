@@ -927,8 +927,14 @@
                     <!-- Force the real textbox (not the fakebox label) so the episode plot
                          renders in every fake-textbox setting. Without forcing it, the plot
                          drops into the fakebox path and is hidden when fake labels are ON.
-                         top 46 clears the 40px title + 6px gap; height must leave
-                         46 + episode_box_h == episode_group_h. -->
+                         top 46 clears the 40px title + 6px gap.
+                         46 + episode_box_h need NOT equal episode_group_h, and deliberately
+                         does not at the hub caller (46 + 198 = 244 inside a 264 group). The
+                         real constraint is the other way round: episode_box_h must be a whole
+                         multiple of the plot line pitch — measured on-device at 39.6px for
+                         font_main_plot — or the textbox renders a final line sliced through
+                         the middle. Any slack left over just sits inside the group, which is
+                         cheaper than moving the meta line and everything below it. -->
                     <param name="use_textbox">true</param>
                     <param name="height">$PARAM[episode_box_h]</param>
                     <param name="width">760</param>
