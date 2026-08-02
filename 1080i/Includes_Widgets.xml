@@ -618,7 +618,14 @@
                 <property name="override_square">fallback/no-results-square.png</property>
                 <property name="override_poster">fallback/no-results-poster.png</property>
                 <property name="override_landscape">fallback/no-results-landscape.png</property>
-                <visible>Integer.IsEqual(Container($PARAM[id]).NumItems,0) | [Integer.IsEqual(Container($PARAM[id]).NumItems,1) + String.IsEqual(Container($PARAM[id]).ListItemAbsolute(0).Label,$LOCALIZE[31046])]</visible>
+                <!-- !IsUpdating first: without it, "hasn't answered yet" and "answered, and the
+                     answer is nothing" are the same state to the count checks below, so the
+                     placeholder renders on top of Widget_Busy for the whole load. Widget_Busy
+                     already covers that window, so nothing replaces it here.
+                     The second count clause is not redundant — once this item is showing it is
+                     the container's only item, so NumItems is 1 rather than 0 and the first
+                     clause alone would immediately hide it again. -->
+                <visible>!Container($PARAM[id]).IsUpdating + [Integer.IsEqual(Container($PARAM[id]).NumItems,0) | [Integer.IsEqual(Container($PARAM[id]).NumItems,1) + String.IsEqual(Container($PARAM[id]).ListItemAbsolute(0).Label,$LOCALIZE[31046])]]</visible>
             </item>
         </content>
     </include>
