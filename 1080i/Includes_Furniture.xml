@@ -60,7 +60,7 @@
              shadow_hard (80000000) is deliberately mid-strength: enough to separate light text
              from bright fanart without muddying it against dark fanart. If on-device review finds
              it still too faint, shadow_full is the next step up. -->
-        <param name="shadowcolor">shadow_hard</param>
+        <param name="shadowcolor">shadow_full</param>
         <param name="top">40</param>
         <definition>
             <control type="group">
