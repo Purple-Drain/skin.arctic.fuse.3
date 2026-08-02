@@ -380,6 +380,16 @@
         <param name="service">ListItem</param>
         <param name="wrapmultiline">true</param>
         <param name="croplogo">Window.Property(TMDbHelper.ListItem.CropImage)</param>
+        <!-- Which edge of the group the logo (and its text fallback) hugs. Defaults to the
+             historical hardcoded "left", so every caller that does not pass it is unchanged.
+             Right-anchoring must be done HERE rather than by narrowing the caller's container:
+             these images set a height but no width, and aspectratio keep scales to fit the box,
+             so a narrow box makes width the binding constraint and shrinks wide logos (#20). -->
+        <param name="align">left</param>
+        <!-- Multiplies the logo images only, never the text fallback. Opaque white is a no-op,
+             so a caller that says nothing renders exactly as before; a caller whose logo sits
+             over fanart as an identifier rather than a focal point can pass logo_dim (#22). -->
+        <param name="logo_colordiffuse">ffffffff</param>
         <definition>
             <control type="group">
                 <left>$PARAM[left]</left>
@@ -387,14 +397,16 @@
                 <height>info_title_h</height>
                 <control type="image">
                     <height>info_title_logo_h</height>
-                    <aspectratio align="left" aligny="center">keep</aspectratio>
+                    <aspectratio align="$PARAM[align]" aligny="center">keep</aspectratio>
+                    <colordiffuse>$PARAM[logo_colordiffuse]</colordiffuse>
                     <fadetime>0</fadetime>
                     <texture background="true">$INFO[$PARAM[croplogo]]</texture>
                     <visible>[!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
                 </control>
                 <control type="image">
                     <height>info_title_logo_h</height>
-                    <aspectratio align="left" aligny="center">keep</aspectratio>
+                    <aspectratio align="$PARAM[align]" aligny="center">keep</aspectratio>
+                    <colordiffuse>$PARAM[logo_colordiffuse]</colordiffuse>
                     <fadetime>0</fadetime>
                     <texture background="true">$INFO[$PARAM[container]$PARAM[listitem].Art(clearlogo)]</texture>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
@@ -402,7 +414,8 @@
                 </control>
                 <control type="image">
                     <height>info_title_logo_h</height>
-                    <aspectratio align="left" aligny="center">keep</aspectratio>
+                    <aspectratio align="$PARAM[align]" aligny="center">keep</aspectratio>
+                    <colordiffuse>$PARAM[logo_colordiffuse]</colordiffuse>
                     <fadetime>0</fadetime>
                     <texture background="true">$INFO[$PARAM[container]$PARAM[listitem].Art(tvshow.clearlogo)]</texture>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
@@ -411,7 +424,8 @@
                 </control>
                 <control type="image">
                     <height>info_title_logo_h</height>
-                    <aspectratio align="left" aligny="center">keep</aspectratio>
+                    <aspectratio align="$PARAM[align]" aligny="center">keep</aspectratio>
+                    <colordiffuse>$PARAM[logo_colordiffuse]</colordiffuse>
                     <fadetime>0</fadetime>
                     <texture background="true">$INFO[$PARAM[container]$PARAM[listitem].Art(artist.clearlogo)]</texture>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
@@ -424,6 +438,7 @@
                     <label>$INFO[$PARAM[container]$PARAM[listitem].TVShowTitle]</label>
                     <font>font_title_midi</font>
                     <aligny>center</aligny>
+                    <align>$PARAM[align]</align>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(clearlogo))</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(tvshow.clearlogo))</visible>
@@ -435,6 +450,7 @@
                     <label>$INFO[$PARAM[container]$PARAM[listitem].Artist]</label>
                     <font>font_title_midi</font>
                     <aligny>center</aligny>
+                    <align>$PARAM[align]</align>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(clearlogo))</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(tvshow.clearlogo))</visible>
@@ -447,6 +463,7 @@
                     <label>$INFO[$PARAM[container]$PARAM[listitem].Title]</label>
                     <font>font_title_midi</font>
                     <aligny>center</aligny>
+                    <align>$PARAM[align]</align>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(clearlogo))</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(tvshow.clearlogo))</visible>
@@ -460,6 +477,7 @@
                     <label>$INFO[$PARAM[container]$PARAM[listitem].Label]</label>
                     <font>font_title_midi</font>
                     <aligny>center</aligny>
+                    <align>$PARAM[align]</align>
                     <visible>![!String.IsEmpty($PARAM[croplogo]) + $EXP[Exp_TMDbHelper_IsCrop]]</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(clearlogo))</visible>
                     <visible>String.IsEmpty($PARAM[container]$PARAM[listitem].Art(tvshow.clearlogo))</visible>
@@ -876,17 +894,21 @@
     </include>
 
     <include name="Info_Plot_Episode">
+        <!-- Reserved height = title 40 + 6px gap + episode_box_h. Both MUST resolve to a literal:
+             this group's <height> is resolved at PARSE time, so a $VAR arrives unresolved, the
+             group collapses to 0, and the grouplist draws the meta line on top of the episode
+             title. A $PARAM carrying a LITERAL does resolve here — that distinction is why the
+             old episodeplotheight param was inert (callers passed it a $VAR) and why these two
+             work. Defaults reproduce the previous hardcoded 124/78 exactly, so callers that pass
+             nothing — notably the video OSD via Includes_OSD.xml — are unchanged. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
+        <definition>
         <control type="group">
             <visible>$PARAM[visible]</visible>
             <visible>String.IsEqual($PARAM[container]$PARAM[listitem].DBType,episode) | $PARAM[override]</visible>
-            <!-- Fixed reserved height (title ~40 + plot box). Must be a literal: this group's
-                 <height> is resolved at PARSE time, so a $VAR arrives unresolved, the group
-                 collapses to 0, and the grouplist draws the meta line on top of the episode
-                 title. Proven on-device: only a literal here takes effect (a $VAR, or a $PARAM
-                 carrying a $VAR, does not). A literal guarantees the meta clears it. That is
-                 why this height is not caller-configurable — an earlier episodeplotheight param
-                 existed for that and could never have worked; it was removed as dead. -->
-            <height>124</height>
+            <height>$PARAM[episode_group_h]</height>
             <control type="group">
                 <visible>[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]</visible>
                 <control type="label">
@@ -913,24 +935,35 @@
                     <!-- Force the real textbox (not the fakebox label) so the episode plot
                          renders in every fake-textbox setting. Without forcing it, the plot
                          drops into the fakebox path and is hidden when fake labels are ON.
-                         Height/top are literals to fit the fixed group height above. -->
+                         top 46 clears the 40px title + 6px gap.
+                         46 + episode_box_h need NOT equal episode_group_h, and deliberately
+                         does not at the hub caller (46 + 198 = 244 inside a 264 group). The
+                         real constraint is the other way round: episode_box_h must be a whole
+                         multiple of the plot line pitch — measured on-device at 39.6px for
+                         font_main_plot — or the textbox renders a final line sliced through
+                         the middle. Any slack left over just sits inside the group, which is
+                         cheaper than moving the meta line and everything below it. -->
                     <param name="use_textbox">true</param>
-                    <param name="height">78</param>
+                    <param name="height">$PARAM[episode_box_h]</param>
                     <param name="width">760</param>
                     <param name="top">46</param>
                 </include>
             </control>
             <control type="group">
                 <visible>![[!String.IsEmpty($PARAM[container]$PARAM[listitem].Season) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Episode) | !String.IsEmpty($PARAM[container]$PARAM[listitem].Title)]]</visible>
+                <!-- No SxE/title in this branch, so the plot takes the whole block. Kept as its
+                     own param because the previous literal (150) deliberately exceeded the 124
+                     group height; folding it into episode_group_h would silently shrink it. -->
                 <include content="Info_Plot_TextBox">
                     <param name="label">$INFO[$PARAM[container]$PARAM[listitem].Plot]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                     <param name="use_textbox">true</param>
-                    <param name="height">150</param>
+                    <param name="height">$PARAM[episode_notitle_box_h]</param>
                     <param name="width">760</param>
                 </include>
             </control>
         </control>
+        </definition>
     </include>
 
     <include name="Info_Plot_Main_Plotline_Content">
@@ -1103,6 +1136,13 @@
         <param name="include_other">true</param>
         <param name="override">false</param>
         <param name="aligny">center</param>
+        <!-- Declared, not just forwarded. Kodi forwards $PARAM[x] unconditionally, so an include
+             that passes a param it never declares sends an EMPTY value downstream, which overrides
+             the leaf's own default instead of falling back to it. That is the long-standing bug
+             behind plotheight here. These three must therefore carry the leaf defaults verbatim. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
         <definition>
 
             <!-- EPISODES -->
@@ -1115,6 +1155,9 @@
                 <param name="height">$PARAM[height]</param>
                 <param name="override">$PARAM[override]</param>
                 <param name="visible">$PARAM[visible]</param>
+                <param name="episode_group_h">$PARAM[episode_group_h]</param>
+                <param name="episode_box_h">$PARAM[episode_box_h]</param>
+                <param name="episode_notitle_box_h">$PARAM[episode_notitle_box_h]</param>
             </include>
 
             <!-- MAIN -->
@@ -1153,7 +1196,23 @@
     <include name="Info_Panel">
         <param name="container" />
         <param name="include_title">true</param>
+        <param name="title_spacer_h">info_title_h</param>
+        <!-- Info_Title's own default (info_title_w, 640) assumes the panel's usual wide column.
+             A caller with a narrower box for the logo (e.g. Hub_Combined_Info's right-hand
+             column) must override this or the logo box overflows past its container — and, for
+             wide logos, past the screen edge — since Info_Title left-aligns within whatever
+             width it is given. -->
+        <param name="title_width">info_title_w</param>
         <param name="include_details">true</param>
+        <!-- Declared so forwarding them below cannot deliver an empty value that overrides the
+             leaf defaults — see the note in Info_Plot. Callers that say nothing get 124/78/150. -->
+        <param name="episode_group_h">124</param>
+        <param name="episode_box_h">78</param>
+        <param name="episode_notitle_box_h">150</param>
+        <!-- Same reason: declared here so the forwards to Info_Title below carry real values.
+             Defaults match Info_Title's own, so nothing changes for existing callers. -->
+        <param name="align">left</param>
+        <param name="logo_colordiffuse">ffffffff</param>
         <param name="colordiffuse">main_fg</param>
         <param name="plotwidth">800</param>
         <param name="plotaligny">center</param>
@@ -1178,15 +1237,23 @@
 
                 <!-- Logo -->
                 <include content="Info_Title" condition="$PARAM[include_title]">
+                    <param name="align">$PARAM[align]</param>
+                    <param name="logo_colordiffuse">$PARAM[logo_colordiffuse]</param>
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                     <param name="container">$PARAM[container]</param>
                     <param name="listitem">$PARAM[listitem]</param>
                     <param name="service">$PARAM[service]</param>
                     <param name="croplogo">$PARAM[croplogo]</param>
+                    <param name="width">$PARAM[title_width]</param>
                 </include>
+                <!-- Blank stand-in for the logo when the caller draws it elsewhere. Defaults to
+                     info_title_h so every existing caller is unchanged; a caller that has moved
+                     the logo out of this column passes title_spacer_h=0 to reclaim the space.
+                     Must be a literal or a $PARAM carrying one — this <height> resolves at parse
+                     time, where a $VAR evaluates to nothing and collapses the group. -->
                 <include content="Object_Control" condition="![$PARAM[include_title]]">
                     <param name="control">group</param>
-                    <height>info_title_h</height>
+                    <height>$PARAM[title_spacer_h]</height>
                 </include>
 
                 <!-- Info -->
@@ -1206,6 +1273,9 @@
                     <param name="height">$PARAM[plotheight]</param>
                     <param name="visible">$PARAM[visible_plot]</param>
                     <param name="use_textbox">$PARAM[use_textbox]</param>
+                    <param name="episode_group_h">$PARAM[episode_group_h]</param>
+                    <param name="episode_box_h">$PARAM[episode_box_h]</param>
+                    <param name="episode_notitle_box_h">$PARAM[episode_notitle_box_h]</param>
                 </include>
 
                 <!-- Meta -->
