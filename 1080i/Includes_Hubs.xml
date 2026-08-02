@@ -263,11 +263,14 @@
                  group, because moving a group moves its bottom edge too. -->
             <control type="group">
                 <include>Home_Slide_Animation</include>
-                <!-- Narrower than info_title_w so the logo, which Info_Title aligns to the LEFT of
-                     its group, ends up near the right edge rather than mid-screen. top places it
-                     in the band just above the widget row (grouplist top 940, slid -440). -->
+                <!-- info_title_w, matching Info_Title's own box width, so this group's left
+                     edge is where that box starts: 1840-640 = x1200, ending flush with the
+                     view_pad inset on the right. The earlier 420 put the box at x1420..2060 and
+                     wide logos, left-aligned inside it, ran off the screen and were clipped —
+                     30 Rock rendered as "30RO" (#20, shot_131 vs shot_132). top places it in the
+                     band just above the widget row (grouplist top 940, slid -440). -->
                 <right>view_pad</right>
-                <width>420</width>
+                <width>info_title_w</width>
                 <top>view_pad</top>
                 <height>600</height>
                 <control type="group">
@@ -278,14 +281,11 @@
                         <param name="visible_plot">false</param>
                         <param name="visible_meta">false</param>
                         <param name="include_details">false</param>
-                        <!-- Must match the 420 box above: Info_Title left-aligns its logo within
-                             whatever width it is handed, and its own default (info_title_w, 640)
-                             is wider than this column. Left uncorrected, that puts the logo's
-                             left edge at this group's left edge but its right edge ~220px past
-                             this group's right edge — beyond the screen's right edge entirely for
-                             1080i (view_pad-right-anchored at x=1420..1840 vs a 1920-wide screen),
-                             clipping wide logos. -->
-                        <param name="title_width">420</param>
+<!-- Hug the RIGHT edge of the box rather than the left. The box itself stays
+                             at Info_Title's full info_title_w default (see title_width there) — a
+                             narrower box would simply scale wide logos down instead, which is the
+                             regression this is undoing. -->
+                        <param name="align">right</param>
                         <param name="container">Container($PARAM[id]).</param>
                     </include>
                 </control>
