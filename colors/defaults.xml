@@ -61,6 +61,11 @@
     <color name="shadow_full">c0000000</color>
     <color name="shadow_back">80000000</color>
 
+    <!-- Logo -->
+    <!-- Alpha-on-white, so it multiplies a clearlogo's own colours down rather than tinting
+         them. Used where a logo sits over fanart as an identifier rather than a focal point. -->
+    <color name="logo_dim">b3ffffff</color>
+
     <!-- Misc -->
     <color name="yellow_star">d7ffcd3c</color>
 
