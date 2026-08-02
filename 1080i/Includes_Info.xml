@@ -1173,6 +1173,12 @@
         <param name="container" />
         <param name="include_title">true</param>
         <param name="title_spacer_h">info_title_h</param>
+        <!-- Info_Title's own default (info_title_w, 640) assumes the panel's usual wide column.
+             A caller with a narrower box for the logo (e.g. Hub_Combined_Info's right-hand
+             column) must override this or the logo box overflows past its container — and, for
+             wide logos, past the screen edge — since Info_Title left-aligns within whatever
+             width it is given. -->
+        <param name="title_width">info_title_w</param>
         <param name="include_details">true</param>
         <!-- Declared so forwarding them below cannot deliver an empty value that overrides the
              leaf defaults — see the note in Info_Plot. Callers that say nothing get 124/78/150. -->
@@ -1208,6 +1214,7 @@
                     <param name="listitem">$PARAM[listitem]</param>
                     <param name="service">$PARAM[service]</param>
                     <param name="croplogo">$PARAM[croplogo]</param>
+                    <param name="width">$PARAM[title_width]</param>
                 </include>
                 <!-- Blank stand-in for the logo when the caller draws it elsewhere. Defaults to
                      info_title_h so every existing caller is unchanged; a caller that has moved

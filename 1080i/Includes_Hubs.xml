@@ -278,6 +278,14 @@
                         <param name="visible_plot">false</param>
                         <param name="visible_meta">false</param>
                         <param name="include_details">false</param>
+                        <!-- Must match the 420 box above: Info_Title left-aligns its logo within
+                             whatever width it is handed, and its own default (info_title_w, 640)
+                             is wider than this column. Left uncorrected, that puts the logo's
+                             left edge at this group's left edge but its right edge ~220px past
+                             this group's right edge — beyond the screen's right edge entirely for
+                             1080i (view_pad-right-anchored at x=1420..1840 vs a 1920-wide screen),
+                             clipping wide logos. -->
+                        <param name="title_width">420</param>
                         <param name="container">Container($PARAM[id]).</param>
                     </include>
                 </control>
