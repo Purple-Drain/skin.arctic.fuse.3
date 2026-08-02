@@ -286,6 +286,10 @@
                              narrower box would simply scale wide logos down instead, which is the
                              regression this is undoing. -->
                         <param name="align">right</param>
+                        <!-- Sitting over arbitrary fanart, this logo identifies the show rather
+                             than being a focal point of its own — dim it so it recedes into the
+                             artwork instead of competing with it (#22). -->
+                        <param name="logo_colordiffuse">logo_dim</param>
                         <param name="container">Container($PARAM[id]).</param>
                     </include>
                 </control>
