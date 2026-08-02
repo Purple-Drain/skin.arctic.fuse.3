@@ -311,12 +311,18 @@
                          that resolve at parse time — a $VAR evaluates to nothing there and
                          collapses the group, so the meta line draws over the tagline (proven
                          on-device, shots 069 vs 074). Raised from 150/124/78 to spend the 140px
-                         reclaimed above. Keep 46 + episode_box_h == episode_group_h.
+                         reclaimed above.
                          Passed here rather than changed at the leaf so the video OSD, which
-                         renders the same episode include, keeps the original defaults. -->
+                         renders the same episode include, keeps the original defaults.
+                         episode_box_h must be a whole multiple of the plot line pitch, measured
+                         on-device at 39.6px for font_main_plot (size 28 x linespacing 1.16):
+                         198 = 5 lines exactly. At 218 the box was 5.5 lines and the textbox
+                         rendered a sixth line sliced through the middle, hard against the meta
+                         line. episode_group_h stays 264 so nothing below moves — the 20px comes
+                         out of dead space inside the group, not out of the layout. -->
                     <param name="plotheight">290</param>
                     <param name="episode_group_h">264</param>
-                    <param name="episode_box_h">218</param>
+                    <param name="episode_box_h">198</param>
                     <param name="episode_notitle_box_h">290</param>
                 </include>
             </control>
