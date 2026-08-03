@@ -13,6 +13,11 @@
                 <align>left</align>
                 <aligny>center</aligny>
                 <textcolor>$PARAM[textcolor]</textcolor>
+                <!-- Light text sits directly on fanart here. The darkening overlay that appears
+                     to protect it belongs to Home_Control and is gated on the menu strip being
+                     visible and on !Vertical, so most windows that draw this header have no
+                     backdrop at all. A shadow is mode-independent and needs no extra scrim. -->
+                <shadowcolor>$PARAM[shadowcolor]</shadowcolor>
                 <font>font_midi_bold</font>
                 <height>80</height>
             </control>
@@ -36,6 +41,9 @@
                 <align>right</align>
                 <aligny>center</aligny>
                 <textcolor>$PARAM[textcolor]</textcolor>
+                <!-- Worst-affected label: the clock sits at the far right where fanart is most
+                     often bright, and nothing darkens behind it. See the note on the left label. -->
+                <shadowcolor>$PARAM[shadowcolor]</shadowcolor>
                 <font>font_midi_bold</font>
                 <height>80</height>
             </control>
@@ -47,6 +55,12 @@
         <param name="include_left">true</param>
         <param name="include_right">true</param>
         <param name="textcolor">main_fg_90</param>
+        <!-- Declared with a default so it is never forwarded empty. Furniture_Header_Left/Right
+             are only reached through here, so this is the single place the value is chosen.
+             shadow_hard (80000000) is deliberately mid-strength: enough to separate light text
+             from bright fanart without muddying it against dark fanart. If on-device review finds
+             it still too faint, shadow_full is the next step up. -->
+        <param name="shadowcolor">shadow_full</param>
         <param name="top">40</param>
         <definition>
             <control type="group">
@@ -57,9 +71,11 @@
                 <include content="Furniture_Header_Left" condition="$PARAM[include_left]">
                     <param name="label">$PARAM[label]</param>
                     <param name="textcolor">$PARAM[textcolor]</param>
+                    <param name="shadowcolor">$PARAM[shadowcolor]</param>
                 </include>
                 <include content="Furniture_Header_Right" condition="$PARAM[include_right]">
                     <param name="textcolor">$PARAM[textcolor]</param>
+                    <param name="shadowcolor">$PARAM[shadowcolor]</param>
                 </include>
             </control>
         </definition>
