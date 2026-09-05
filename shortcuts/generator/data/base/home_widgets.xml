@@ -30,6 +30,12 @@
             <datafile>generator/data/base/home_widgets_combined.xml</datafile>
         </item>
         <item>
+            <!-- skin.arctic.fuse.3 #28 lever (c): static Custom_Submenu tiles,
+                 only rendered when Widgets.StaticSubmenuTiles is on
+                 (see 1080i/Includes_Hubs.xml, Hub_Window widget group 500). -->
+            <datafile>generator/data/base/home_widgets_combined_staticsubmenu.xml</datafile>
+        </item>
+        <item>
             <datafile>generator/data/base/home_widgets_combined_selector.xml</datafile>
         </item>
         <item>
