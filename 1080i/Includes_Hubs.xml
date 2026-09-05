@@ -808,6 +808,15 @@
                                     <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Wall)">skinvariables-$PARAM[window]widgets-wall</include>
                                 </include>
                                 <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Combined)">skinvariables-$PARAM[window]widgets-combined</include>
+                                <!-- skin.arctic.fuse.3 #28 lever (c): the two Home Custom Submenu
+                                     rows (hub tiles, options tiles), rendered as static tiles
+                                     generated from their own JSON at SkinVariables template time
+                                     instead of a plugin://script.skinvariables get_shortcuts_node
+                                     directory job, when Widgets.StaticSubmenuTiles is on. Same
+                                     container ids as the rows they replace (widgets_combined.xmltemplate
+                                     suppresses the dynamic ones when this setting is on), so no
+                                     id collision. -->
+                                <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Combined) + Skin.HasSetting(Widgets.StaticSubmenuTiles)">skinvariables-$PARAM[window]widgets-combined-staticsubmenu</include>
                                 <include condition="String.IsEqual(Skin.String(HomeSwitcher.$PARAM[window].Mode),Standard)">skinvariables-$PARAM[window]widgets-standard</include>
                             </control>
 
