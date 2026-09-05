@@ -1,0 +1,31 @@
+<contents>
+    <template>generator/data/parts/basic_include.xmltemplate</template>
+    <value name="comments">skin.arctic.fuse.3 #28 lever (c): static tile content for the
+        Custom Submenu widget rows (Home hub tiles, options tiles), used instead of
+        the plugin://script.skinvariables get_shortcuts_node row when
+        Widgets.StaticSubmenuTiles is on. Built from each row's own "submenu" array
+        in the same shortcuts JSON at generation time (mode="submenu" below,
+        the same mechanism home_subitems.xml already uses for the Home submenu
+        bar's own tiles), so it never dispatches a CDirectoryProvider job.</value>
+    <value name="includes_name">skinvariables-{item}widgets-combined-staticsubmenu</value>
+    <value name="includes_part">
+        <items menu="{item}">
+            <item>
+                <datafile>generator/data/setup/widgets_row.xml</datafile>
+                <template>generator/data/parts/widgets_combined_static_submenu.xmltemplate</template>
+                <condition>{item_disabled}!=True</condition>
+                <condition>{item_path}==Custom_Submenu</condition>
+                <value name="parts_extraitems">
+                    <items menu="{item_menu}" item="{item_x}" mode="submenu">
+                        <item>
+                            <template>generator/data/parts/widget_static_submenu_child.xmltemplate</template>
+                            <datafile>generator/data/setup/onclick_path.xml</datafile>
+                            <condition>{item_disabled}!=True</condition>
+                            <condition>{item_label}!=</condition>
+                        </item>
+                    </items>
+                </value>
+            </item>
+        </items>
+    </value>
+</contents>
