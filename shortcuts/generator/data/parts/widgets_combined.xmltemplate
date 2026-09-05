@@ -1,4 +1,11 @@
-<include content="Hub_Combined_Widget">
+<!-- skin.arctic.fuse.3 #28 lever (c): when Widgets.StaticSubmenuTiles is on, a
+     Custom_Submenu row's dynamic plugin://script.skinvariables get_shortcuts_node
+     content is suppressed here (kept off the render tree entirely, not just
+     hidden, so it never dispatches a CDirectoryProvider job) in favour of the
+     static equivalent from home_widgets_combined_staticsubmenu.xml at the same
+     container id. Every other row is unaffected: widget_is_custom_submenu is
+     False for them, so the condition is always true. -->
+<include content="Hub_Combined_Widget" condition="!{widget_is_custom_submenu} | !Skin.HasSetting(Widgets.StaticSubmenuTiles)">
     <param name="id">{widget_id}</param>
     <param name="content">{widget_path}</param>
     <param name="include">{widget_include}</param>

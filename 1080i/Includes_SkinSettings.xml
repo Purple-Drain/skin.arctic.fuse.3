@@ -375,6 +375,17 @@
             <onclick>Skin.ToggleSetting(Header.DisableWeather)</onclick>
             <selected>!Skin.HasSetting(Header.DisableWeather)</selected>
         </include>
+        <include content="Settings_Button" description="Static Submenu Tiles">
+            <param name="dialog">false</param>
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">007</param>
+            <param name="dialog">false</param>
+            <param name="control">radiobutton</param>
+            <label>Static Home submenu tiles</label>
+            <onclick>Skin.ToggleSetting(Widgets.StaticSubmenuTiles)</onclick>
+            <selected>Skin.HasSetting(Widgets.StaticSubmenuTiles)</selected>
+        </include>
 
 
         <include content="Settings_Label" description="Context">
