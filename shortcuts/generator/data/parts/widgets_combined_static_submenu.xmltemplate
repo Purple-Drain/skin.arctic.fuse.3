@@ -1,0 +1,21 @@
+<!-- skin.arctic.fuse.3 #28 lever (c): static replacement for a Custom_Submenu row's
+     Hub_Combined_Widget content. Same id, same include (List_Square_Row/etc via
+     {widget_include}), same visibility expression as the dynamic row it replaces
+     (widgets_combined.xmltemplate) — the only thing that differs is the content
+     source: {parts_extraitems} below is a literal, generation-time-built list of
+     <item> elements (from home_widgets_combined_staticsubmenu.xml), not a
+     plugin:// directory path, so this container never dispatches a
+     CDirectoryProvider job. -->
+<include content="Hub_Combined_Widget">
+    <param name="id">{widget_id}</param>
+    <param name="include">{widget_include}</param>
+    <param name="target">{widget_target}</param>
+    <param name="sortby">{widget_sortby}</param>
+    <param name="sortorder">{widget_sortorder}</param>
+    <param name="limit">{widget_limit}</param>
+    <param name="autoscroll">false</param>
+    <param name="visible">String.IsEqual(Container(601).ListItem.Property(guid),{widget_guid})</param>
+    <param name="content">
+        {parts_extraitems}
+    </param>
+</include>
