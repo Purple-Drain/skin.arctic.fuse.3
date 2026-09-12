@@ -342,7 +342,9 @@
                     <width>80</width>
                     <!-- Circle + selected icon when Search hub is active and menu is focused (mirrors Home_Focus_Faker icon mode) -->
                     <control type="group">
-                        <visible>Control.HasFocus(300) + Window.IsVisible(1105) + !String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
+                        <!-- #37: this strip is drawn in dialog 1182, so Control.HasFocus(300) is always false here;
+                             Search's own 300 publishes its focus as Window(Home).Property(Search.HeaderFocus). -->
+                        <visible>!String.IsEmpty(Window(Home).Property(Search.HeaderFocus)) + Window.IsVisible(1105) + !String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
                         <control type="image">
                             <include>Texture_Menu_Highlight_H</include>
                         </control>
@@ -359,7 +361,7 @@
                     <control type="image">
                         <include>Home_Grouplist_Icon_Definition</include>
                         <texture background="true" colordiffuse="main_fg_100">special://skin/extras/icons/search.png</texture>
-                        <visible>!Control.HasFocus(300) + Window.IsVisible(1105) + Skin.HasSetting(Search.StandardHubMenu)</visible>
+                        <visible>String.IsEmpty(Window(Home).Property(Search.HeaderFocus)) + Window.IsVisible(1105) + Skin.HasSetting(Search.StandardHubMenu)</visible>
                     </control>
                 </control>
                 <control type="grouplist">
