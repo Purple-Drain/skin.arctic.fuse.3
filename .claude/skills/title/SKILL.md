@@ -1,55 +1,60 @@
 ---
 name: title
-description: Propose a session handoff title in this project's house format - status emoji, bracketed date, two topic emoji, repo, and the outcome. Use when the user asks to title a session, name it, close one out, wrap up, or asks what to call it.
+description: Generate this thread's title line and print it, and nothing else. Fast path, no audit, no tool calls. Use when you just want the current title (e.g. for /rename). If it looks broken or stale, use title-fix.
 ---
 
-# Session handoff title
+# Thread title: generate on demand
 
-Emit **one** title. Offer alternatives only when the framing is genuinely
-ambiguous — for example when two repos both carry a durable outcome.
+Compose the title for the CURRENT thread right now and print it — nothing else.
+No checklist recitation, no explanation. This is the cheap path for "give me
+the line."
 
 ## Format
 
-`<status> [DD.MM.YY] <two topic emoji> <repo>: <what actually happened>`
+```
+status emoji | dd.mm.yy | context emoji(s) | short title
+```
 
-## Status emoji
+Slot template, not literal syntax — no square brackets in the actual line;
+the `|` above is the literal separator, with a space on each side.
 
-| | meaning |
-|---|---|
-| 🟢 | landed — commits pushed, CI green |
-| 🔵 | no repo change — investigation, diagnosis, or handoff only |
-| 🟡 | landed, but something is unresolved or needs a follow-up |
-| 🔴 | blocked or failed |
+## Composing it
 
-## Rules
+Two parts, in order:
 
-- **Date** is today's, `DD.MM.YY`, in brackets. Older notes are inconsistent
-  about the brackets; standardise on them.
-- **Repo** is the one carrying the durable outcome. If the work spanned several,
-  pick the one a future session would grep first.
-- **The tail states the outcome, not the activity.** "clones synced, no leftover
-  to PR" beats "worked on syncing clones".
-- **Never claim a push, a merge, or green CI that wasn't verified in-session.**
-  This is the rule most worth keeping — these repos' own handoff notes carry
-  corrections where exactly that went wrong. If CI was not observed, 🟡 or 🔵
-  is the honest status, not 🟢.
-- Two topic emoji, chosen for the subject.
+1. **Thread anchor** — the standing project/device/repo, NOT the current work
+   topic. Pull this from this repo's CLAUDE.md project scope, or a device/repo
+   name. Stable across the thread; only change it if the actual project/repo
+   has changed. Never substitute the current task's subject here even if no
+   other anchor is obvious — fall back to the repo/folder name before dropping
+   the anchor.
+2. **Current work** — the specific task in the latest exchange, a few words.
+   This is where task-specific topics (e.g. "session strategy") belong — not
+   in the anchor slot.
 
-## Examples
+Join as `anchor: work`. Pick the status emoji for the state of the work (🟢
+done/working, 🟡 in progress, 🔴 broken/blocked, 🔵 informational), and at
+least one context emoji conveying the subject.
 
-Real titles from these repos:
+Before finalizing, check whether this turn leaves anything armed to act without
+the user — an unfired `ScheduleWakeup`, a backgrounded `Workflow`/`CronCreate`,
+or a background `Agent` call (`subagent_type: "fork"` or `isolation: "remote"`).
+If so, add ⏳ to the context emoji; if the thread is fully at rest, leave it out.
+This is independent of the status emoji choice — see this repo's `CLAUDE.md`
+thread-title convention for why the two shouldn't be conflated.
 
-    🟢 [02.08.26] 📤🛡️ kodi-strm-pipeline: pushed and closed, CI green
-    🔵 [29.07.26] 🎬🔧 kodi-shield-config: confirmed Dolby Vision is currently ON
-    🟢 [28.07.26] ⚽📺 kodi-shield-config: Winter Festival of Football added
-    🟢 [02.08.26] 🛡️🔗 kodi-shield-config: clones synced, no leftover to PR
+If a session UUID for a hand-off/blocked/waiting relationship has already been
+stated in this conversation's context (quoted in a notification, named by the
+user), append its 8-hex prefix to the work slot in prose — `session 185a7b4e`.
+Only when it's already stated — never go looking for one; that judgment call is
+`title-fix`'s job, not this skill's fast path.
 
----
+## Action
 
-**This file has three identical siblings.** The same skill is committed in
-`kodi-strm-pipeline`, `kodi-shield-config`, `skin.arctic.fuse.3` and
-`shield-debug-toolkit`, so a cloud session gets it whichever repo it clones —
-`~/.claude/` does not travel to remote sessions, only the repo does. Deliberately
-copied rather than symlinked: the `kodi-log` symlink pattern works only while the
-repos are siblings on one disk, and its `skillOverrides` live in a gitignored
-`.claude/settings.local.json`. Edit one copy, sync the other three.
+Invoked as `/title`: the entire response is the composed line, printed once. No
+tool calls, no explanation, no list of checks (that is title-fix's job). A
+one-line response is both the opening and closing title line, so the CLAUDE.md
+convention is satisfied as-is.
+
+If you're already mid-response and just need the closing/opening title (the
+normal case), this is that: compose once, use it in both positions.
