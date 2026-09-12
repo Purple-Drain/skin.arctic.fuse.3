@@ -243,6 +243,18 @@
                 <ondown condition="Skin.HasSetting(HomeSwitcher.Vertical)">$INFO[Container(399).ListItem(1).Property(action)]</ondown>
 
                 <onfocus>SetProperty(HomeSwitcher.IsVisible,True,Home)</onfocus>
+                <!-- #38: Hub_Onload_Window (Includes_Hubs.xml) only defaults
+                     TMDbHelper.WidgetContainer to the top row/spotlight once, the
+                     first time the window ever loads with the property empty. Once
+                     any row has taken real focus, the property never resets, so
+                     hovering back up to the header keeps showing whichever row was
+                     last focused instead of falling back to the default row/spotlight
+                     — the info panel and Spotlight banner (both gated on this
+                     property) then stay hidden even though the background art
+                     already reflects the current item. Re-apply the same default
+                     every time the header regains focus, not only on first load. -->
+                <onfocus condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">SetProperty(TMDbHelper.WidgetContainer,301,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">SetProperty(TMDbHelper.WidgetContainer,501,$PARAM[window])</onfocus>
                 <onfocus condition="$PARAM[overlay]">SetProperty(InfoPanel.FullSwitch,Wall,Home)</onfocus>
                 <onfocus condition="![$PARAM[overlay]]">ClearProperty(InfoPanel.FullSwitch,Home)</onfocus>
                 <onfocus condition="$PARAM[overlay]">SetProperty(Background.ShowOverlay,True,Home)</onfocus>
