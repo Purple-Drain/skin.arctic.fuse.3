@@ -12,6 +12,7 @@
     <!-- #37: land on the header icon (300) like every other hub, so switching into Search
          shows its purple pill; Down still goes to the searchbar (Includes_Search.xml ondown 3000). -->
     <onload condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)">SetFocus(300)</onload>
+    <onunload>ClearProperty(Search.HeaderFocus,Home)</onunload>
 
     <controls>
         <include>Search</include>

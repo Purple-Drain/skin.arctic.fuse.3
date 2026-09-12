@@ -13,6 +13,10 @@
                 <param name="overlay">[false]</param>
                 <onfocus condition="!Skin.HasSetting(HomeSwitcher.Vertical) + !Skin.HasSetting(Search.StandardHubMenu)">SetFocus(3001)</onfocus>
                 <ondown condition="!Skin.HasSetting(HomeSwitcher.Vertical) + Skin.HasSetting(Search.StandardHubMenu)">3000</ondown>
+                <!-- #37: the header strip draws in dialog 1182, where Control.HasFocus(300) never sees
+                     this window's 300. Publish header focus as a Home property 1182 can read. -->
+                <onfocus>SetProperty(Search.HeaderFocus,True,Home)</onfocus>
+                <onunfocus>ClearProperty(Search.HeaderFocus,Home)</onunfocus>
             </include>
 
             <control type="group">
