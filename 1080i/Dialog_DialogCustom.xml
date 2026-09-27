@@ -970,6 +970,15 @@
             <onclick>Skin.ToggleSetting(OSD.DisplayInfoOnControls)</onclick>
         </include>
 
+        <include content="Settings_Button" description="Next episode now button (off by default; add-ons opt in via AF3.OSD.NextEpisode.Action)">
+            <param name="dialog">true</param>
+            <param name="id">8090</param>
+            <param name="control">radiobutton</param>
+            <label>Show next episode button</label>
+            <selected>Skin.HasSetting(OSD.ShowNextEpisodeButton)</selected>
+            <onclick>Skin.ToggleSetting(OSD.ShowNextEpisodeButton)</onclick>
+        </include>
+
         <!-- <include content="Settings_Button" description="Expanded info landscape art">
             <param name="dialog">true</param>
             <param name="id">8002</param>
