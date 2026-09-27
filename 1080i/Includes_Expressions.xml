@@ -65,7 +65,9 @@
 
     <expression name="Exp_Hubs_Menu_Loopback">[Skin.HasSetting(HomeSwitcher.LoopBack) | Skin.HasSetting(HomeSwitcher.Vertical)]</expression>
 
-    <expression name="Exp_Hubs_SlideInfo">[[!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) + !Skin.HasSetting(HomeSwitcher.Vertical)] | [Window.IsVisible(1105) + String.IsEmpty(Window(1105).Property(Searchbar.IsHidden)) + !Window.IsActive(DialogKeyboard.xml)]]</expression>
+    <expression name="Exp_Hubs_SlideInfo">[!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) + !Skin.HasSetting(HomeSwitcher.Vertical)]</expression>
+
+    <expression name="Exp_Hubs_Searchbar_IsVisible">[Control.HasFocus(3000) | Control.HasFocus(3001) | Control.HasFocus(3002) | Control.HasFocus(3003) | Control.HasFocus(301) | Control.HasFocus(601) | Control.HasFocus(691)]</expression>
 
 
     <!-- ============== -->
@@ -126,7 +128,7 @@
 
     <expression name="Exp_OSD_DelayInfo_Timing">[[System.IdleTime(3)] | [System.IdleTime(2) + Skin.String(OSD.AutoOnPause.Delay,2s)] | [System.IdleTime(1) + Skin.String(OSD.AutoOnPause.Delay,1s)] | [System.IdleTime(0) + Skin.String(OSD.AutoOnPause.Delay,0s)]]</expression>
 
-    <expression name="Exp_OSD_DelayInfo">[$EXP[Exp_OSD_DelayInfo_Timing] + Skin.String(OSD.AutoOnPause,Info) + Player.Paused]</expression>
+    <expression name="Exp_OSD_DelayInfo">[$EXP[Exp_OSD_DelayInfo_Timing] + Skin.String(OSD.AutoOnPause,Info) + Player.Paused + !$EXP[Exp_InfoDialogs]]</expression>
 
     <expression name="Exp_OSD_QuickInfo">[$EXP[Exp_OSD_PVRChannelSwitch] | Window.IsActive(fullscreeninfo) | $EXP[Exp_OSD_DelayInfo]]</expression>
 
@@ -139,8 +141,18 @@
 
     <expression name="Exp_Video_IsNotPlaying">[![Player.HasVideo | [Player.HasAudio + !Skin.HasSetting(Background.Visualisation.Disabled) + Visualisation.Enabled]] | Player.Paused | Skin.HasSetting(Background.DisableVideo) | Window.IsVisible(1123)]</expression>
 
-    <expression name="Exp_Christmas_Theme">[System.Date(12-01,01-07) + Skin.HasSetting(EnableHolidayTheme) + [[!Window.IsVisible(visualisation) + !VideoPlayer.IsFullscreen] | Window.IsActive(fullscreeninfo)]]</expression>
+    <expression name="Exp_SeasonalTheme_Christmas">[!Skin.String(SeasonalTheme.ChristmasTheme,Off) + System.Date(12-07,01-07)]</expression>
 
-    <expression name="Exp_Halloween_Theme">[System.Date(10-30,11-01) + Skin.HasSetting(EnableHolidayTheme) + [[!Window.IsVisible(visualisation) + !VideoPlayer.IsFullscreen] | Window.IsActive(fullscreeninfo)]]</expression>
+    <expression name="Exp_SeasonalTheme_Winter">[String.IsEmpty(Skin.String(SeasonalTheme.ChristmasTheme)) + System.Date(12-07,01-07)]</expression>
+
+    <expression name="Exp_SeasonalTheme_Aussie">[Skin.String(SeasonalTheme.ChristmasTheme,Aussie) + System.Date(12-07,01-07)]</expression>
+
+    <expression name="Exp_SeasonalTheme_Summer">[!Skin.HasSetting(SeasonalTheme.DisableSummer) + System.Date(06-21,08-15)]</expression>
+
+    <expression name="Exp_SeasonalTheme_Halloween">[!Skin.HasSetting(SeasonalTheme.DisableHalloween) + System.Date(10-01,11-01)]</expression>
+
+    <expression name="Exp_SeasonalTheme_Active">[Skin.HasSetting(SeasonalTheme.Enable) + [$EXP[Exp_SeasonalTheme_Christmas] | $EXP[Exp_SeasonalTheme_Summer] | $EXP[Exp_SeasonalTheme_Halloween]]]</expression>
+
+    <expression name="Exp_SeasonalTheme_Visible">[!System.ScreenSaverActive + !Window.IsVisible(slideshow) + [[!Window.IsVisible(visualisation) + !VideoPlayer.IsFullscreen] | Window.IsActive(fullscreeninfo)]]</expression>
 
 </includes>
