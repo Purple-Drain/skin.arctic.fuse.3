@@ -91,6 +91,25 @@
                             <param name="iconoffset_condition">[PVR.IsRecordingPlayingChannel + PVR.CanRecordPlayingChannel]</param>
                         </include>
 
+                        <!-- Next episode now (TheRedWizard #199). Open to any add-on: set Window(Home).Property(AF3.OSD.NextEpisode.Action)
+                             to a builtin (e.g. RunPlugin(plugin://...)) while it owns playback, clear it after. Red Light is also
+                             recognised by its own active-playback property, so it needs no extra wiring. -->
+                        <control type="button" id="6009">
+                            <include>Defs_OSD_Button</include>
+                            <visible>!String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action)) | [VideoPlayer.Content(episodes) + !String.IsEmpty(Window(Home).Property(redlight.active_playback_key))]</visible>
+                            <onclick>CancelAlarm(osd_timeout,true)</onclick>
+                            <onclick condition="!String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action))">$INFO[Window(Home).Property(AF3.OSD.NextEpisode.Action)]</onclick>
+                            <onclick condition="String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action))">RunPlugin(plugin://plugin.video.redlight/?mode=playback.skip_episode)</onclick>
+                            <onup>8200</onup>
+                        </control>
+                        <include content="OSD_Button_Icon_Overlay">
+                            <param name="icon">special://skin/extras/icons/forward-step.png</param>
+                            <param name="id">6009</param>
+                            <param name="groupid">6109</param>
+                            <param name="itemgap">osd_itemgap</param>
+                            <param name="groupvisible">Control.IsVisible(6009)</param>
+                        </include>
+
                         <!-- Button 4 -->
                         <control type="button" id="6004">
                             <include>Defs_OSD_Button</include>
