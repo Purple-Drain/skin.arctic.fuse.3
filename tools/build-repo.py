@@ -22,6 +22,20 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
+import urllib.request
+
+# Dependencies published alongside the skin, so repository.purpledrain can satisfy them without
+# repository.jurialmunkey enabled (it stays off on the devices so upstream can't replace the forks;
+# TheRedWizard #199). Pinned by version and sha256: bump both together.
+BUNDLED_DEPS = (
+    ('script.skinvariables', '2.2.5',
+     'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/script.skinvariables/script.skinvariables-2.2.5.zip',
+     '45537dbca6fce17ef4d7e14cc70d956e2d80929f1aede3e26a12638d0bfe61f5'),
+    ('script.texturemaker', '0.2.11',
+     'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/script.texturemaker/script.texturemaker-0.2.11.zip',
+     'e0562c802f0e89c4ab2e6bf4d79a2eb4b444bb05f8ae74c423cf098f73701c55'),
+)
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'dist')
 SKIP_DIRS = {'.git', '.github', '.claude', 'tools', 'dist', '__pycache__', 'android-favourites'}
@@ -59,9 +73,24 @@ def main():
     for art in ('icon.png', 'fanart.jpg'):
         if os.path.isfile(os.path.join(ROOT, art)):
             shutil.copy(os.path.join(ROOT, art), os.path.join(out_dir, art))
-    manifest = open(os.path.join(ROOT, 'addon.xml'), encoding='utf-8').read()
-    manifest = re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', manifest).rstrip()
-    body = '\n'.join(('\t' + l if l.strip() else l) for l in manifest.splitlines())
+    manifests = [open(os.path.join(ROOT, 'addon.xml'), encoding='utf-8').read()]
+    for dep_id, dep_version, url, sha256 in BUNDLED_DEPS:
+        data = urllib.request.urlopen(url, timeout=60).read()
+        if hashlib.sha256(data).hexdigest() != sha256:
+            sys.exit('%s-%s: sha256 mismatch, refusing to publish' % (dep_id, dep_version))
+        dep_dir = os.path.join(OUT, dep_id)
+        os.makedirs(dep_dir, exist_ok=True)
+        with open(os.path.join(dep_dir, '%s-%s.zip' % (dep_id, dep_version)), 'wb') as fh:
+            fh.write(data)
+        with zipfile.ZipFile(os.path.join(dep_dir, '%s-%s.zip' % (dep_id, dep_version))) as dz:
+            dep_manifest = dz.read('%s/addon.xml' % dep_id).decode('utf-8')
+        if ET.fromstring(re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', dep_manifest).encode('utf-8')).get('version') != dep_version:
+            sys.exit('%s: zip addon.xml is not version %s' % (dep_id, dep_version))
+        manifests.append(dep_manifest)
+        print('bundled %s-%s' % (dep_id, dep_version))
+    body = '\n'.join(
+        '\n'.join(('\t' + l if l.strip() else l) for l in re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', m).rstrip().splitlines())
+        for m in manifests)
     addons_xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n%s\n</addons>\n' % body
     ET.fromstring(addons_xml.encode('utf-8'))  # fail loudly on a malformed index
     with open(os.path.join(OUT, 'addons.xml'), 'w', encoding='utf-8') as fh:
