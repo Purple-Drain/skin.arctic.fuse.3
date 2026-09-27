@@ -96,7 +96,7 @@
                              recognised by its own active-playback property, so it needs no extra wiring. -->
                         <control type="button" id="6009">
                             <include>Defs_OSD_Button</include>
-                            <visible>!String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action)) | [VideoPlayer.Content(episodes) + !String.IsEmpty(Window(Home).Property(redlight.active_playback_key))]</visible>
+                            <visible>Skin.HasSetting(OSD.ShowNextEpisodeButton) + [!String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action)) | [VideoPlayer.Content(episodes) + !String.IsEmpty(Window(Home).Property(redlight.active_playback_key))]]</visible>
                             <onclick>CancelAlarm(osd_timeout,true)</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action))">$INFO[Window(Home).Property(AF3.OSD.NextEpisode.Action)]</onclick>
                             <onclick condition="String.IsEmpty(Window(Home).Property(AF3.OSD.NextEpisode.Action))">RunPlugin(plugin://plugin.video.redlight/?mode=playback.skip_episode)</onclick>
