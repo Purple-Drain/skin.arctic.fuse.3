@@ -26,15 +26,33 @@ import urllib.request
 
 # Dependencies published alongside the skin, so repository.purpledrain can satisfy them without
 # repository.jurialmunkey enabled (it stays off on the devices so upstream can't replace the forks;
-# TheRedWizard #199). Pinned by version and sha256: bump both together.
-BUNDLED_DEPS = (
-    ('script.skinvariables', '2.2.5',
-     'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/script.skinvariables/script.skinvariables-2.2.5.zip',
-     '45537dbca6fce17ef4d7e14cc70d956e2d80929f1aede3e26a12638d0bfe61f5'),
-    ('script.texturemaker', '0.2.11',
-     'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/script.texturemaker/script.texturemaker-0.2.11.zip',
-     'e0562c802f0e89c4ab2e6bf4d79a2eb4b444bb05f8ae74c423cf098f73701c55'),
-)
+# TheRedWizard #199). Worked out on every build from the skin's own <import>s: any dependency
+# jurialmunkey's repo publishes is bundled at his latest version, unmodified, so an upstream sync
+# that raises a minimum (or adds a new jurialmunkey dependency) is covered without editing this file.
+# Dependencies he does not publish (Kodi built-ins, official-repo resource packs) are left alone.
+UPSTREAM_REPO = 'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/'
+# Ids never bundled even if upstream publishes them: add-ons we fork and publish ourselves.
+NEVER_BUNDLE = {'plugin.video.themoviedb.helper'}
+
+
+def _version_tuple(v):
+    return tuple(int(p) if p.isdigit() else 0 for p in re.split(r'[.+~-]', v))
+
+
+def resolve_bundled_deps():
+    skin = ET.parse(os.path.join(ROOT, 'addon.xml')).getroot()
+    wanted = {i.get('addon'): i.get('version') for i in skin.iter('import')}
+    index = ET.fromstring(urllib.request.urlopen(UPSTREAM_REPO + 'addons.xml', timeout=60).read())
+    upstream = {a.get('id'): a.get('version') for a in index.iter('addon')}
+    deps = []
+    for dep_id, minimum in sorted(wanted.items()):
+        if dep_id in NEVER_BUNDLE or dep_id not in upstream:
+            continue
+        latest = upstream[dep_id]
+        if minimum and _version_tuple(latest) < _version_tuple(minimum):
+            sys.exit('%s: skin needs %s but upstream only has %s' % (dep_id, minimum, latest))
+        deps.append((dep_id, latest, '%s%s/%s-%s.zip' % (UPSTREAM_REPO, dep_id, dep_id, latest)))
+    return deps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'dist')
@@ -74,20 +92,20 @@ def main():
         if os.path.isfile(os.path.join(ROOT, art)):
             shutil.copy(os.path.join(ROOT, art), os.path.join(out_dir, art))
     manifests = [open(os.path.join(ROOT, 'addon.xml'), encoding='utf-8').read()]
-    for dep_id, dep_version, url, sha256 in BUNDLED_DEPS:
+    for dep_id, dep_version, url in resolve_bundled_deps():
         data = urllib.request.urlopen(url, timeout=60).read()
-        if hashlib.sha256(data).hexdigest() != sha256:
-            sys.exit('%s-%s: sha256 mismatch, refusing to publish' % (dep_id, dep_version))
+        sha256 = hashlib.sha256(data).hexdigest()
         dep_dir = os.path.join(OUT, dep_id)
         os.makedirs(dep_dir, exist_ok=True)
         with open(os.path.join(dep_dir, '%s-%s.zip' % (dep_id, dep_version)), 'wb') as fh:
             fh.write(data)
         with zipfile.ZipFile(os.path.join(dep_dir, '%s-%s.zip' % (dep_id, dep_version))) as dz:
             dep_manifest = dz.read('%s/addon.xml' % dep_id).decode('utf-8')
-        if ET.fromstring(re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', dep_manifest).encode('utf-8')).get('version') != dep_version:
-            sys.exit('%s: zip addon.xml is not version %s' % (dep_id, dep_version))
+        dep_root = ET.fromstring(re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', dep_manifest).encode('utf-8'))
+        if dep_root.get('id') != dep_id or dep_root.get('version') != dep_version:
+            sys.exit('%s: zip addon.xml is %s %s, expected %s' % (dep_id, dep_root.get('id'), dep_root.get('version'), dep_version))
         manifests.append(dep_manifest)
-        print('bundled %s-%s' % (dep_id, dep_version))
+        print('bundled %s-%s sha256=%s' % (dep_id, dep_version, sha256))
     body = '\n'.join(
         '\n'.join(('\t' + l if l.strip() else l) for l in re.sub(r'^\s*<\?xml[^>]*\?>\s*', '', m).rstrip().splitlines())
         for m in manifests)
