@@ -96,7 +96,7 @@
     <variable name="Action_OSD_SkipNext">
         <value condition="!String.IsEmpty(Player.Chapter) + !String.IsEqual(Player.Chapter,00) + !String.IsEmpty(Player.ChapterCount) + !String.IsEqual(Player.ChapterCount,00) + !String.IsEqual(Player.Chapter,Player.ChapterCount)">ChapterOrBigStepForward</value>
         <value condition="Integer.IsLess(VideoPlayer.PlaylistPosition,VideoPlayer.PlaylistLength)">SkipNext</value>
-        <value condition="!String.IsEmpty(Container(450).ListItem.FileNameAndPath) + Integer.IsLess(Player.TimeRemaining(mins),10)">PlayMedia($ESCINFO[Container(450).ListItem.FileNameAndPath])</value>
+        <value condition="!String.IsEmpty(Container(450).ListItem.FileNameAndPath) + Integer.IsLess(Player.TimeRemaining(mins),10)">RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/builtins/skinvariables-playnext.json,use_rules)</value>
         <value>ChapterOrBigStepForward</value>
     </variable>
 
@@ -157,7 +157,17 @@
 
     <include name="Action_View_Movement_OnUp">
         <definition>
-            <onup>ActivateWindow(1171)</onup>
+            <onup>SetProperty(Bumper.Direction,Up,Home)</onup>
+            <onup>ActivateWindow(1180)</onup>
+            <!-- <onup>ActivateWindow(1171)</onup> -->
+        </definition>
+    </include>
+
+    <include name="Action_View_Movement_OnLeft">
+        <definition>
+            <onleft>SetProperty(Bumper.Direction,Left,Home)</onleft>
+            <onleft>ActivateWindow(1180)</onleft>
+            <!-- <onleft>ActivateWindow(1171)</onleft> -->
         </definition>
     </include>
 
@@ -339,7 +349,7 @@
 
     <variable name="Action_Shortcut_SetWidgetStyle">
         <value condition="String.IsEmpty(Container(22001).ListItem.Property(url))" />
-        <value>RunPlugin($INFO[Container(22001).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;widget_style&amp;&amp;$LOCALIZE[20021]=Poster&amp;$LOCALIZE[31045]=Landscape&amp;$LOCALIZE[31320]=Square&amp;$LOCALIZE[31424]=Board&amp;$LOCALIZE[31431]=Circle&amp;$LOCALIZE[31423]=Card&amp;&amp;$LOCALIZE[736]&amp;&amp;True)</value>
+        <value>RunPlugin($INFO[Container(22001).ListItem.Property(url)]&amp;func=do_edit&amp;&amp;widget_style&amp;&amp;$LOCALIZE[20021]=Poster&amp;$LOCALIZE[31045]=Landscape&amp;$LOCALIZE[31320]=Square&amp;$LOCALIZE[31424]=Board&amp;$LOCALIZE[31161]=Flyer&amp;$LOCALIZE[31431]=Circle&amp;$LOCALIZE[31423]=Card&amp;$LOCALIZE[31172]=Placard&amp;&amp;$LOCALIZE[736]&amp;&amp;True)</value>
     </variable>
 
     <variable name="Action_FullscreenWidget_InfoButton">
@@ -356,6 +366,7 @@
         <value condition="Skin.String(CustomRating.Movies.Item01,RottenTomatoesUser)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item01,MDBList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item01,Letterboxd)">Skin.Reset(TMDbHelper.DisableRatings)</value>
+        <value condition="Skin.String(CustomRating.Movies.Item01,MyAnimeList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item01,Awards)">Skin.Reset(TMDbHelper.DisableRatings)</value>
 
         <value condition="Skin.String(CustomRating.Movies.Item02,TMDb)">Skin.Reset(TMDbHelper.DisableRatings)</value>
@@ -366,6 +377,7 @@
         <value condition="Skin.String(CustomRating.Movies.Item02,RottenTomatoesUser)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item02,MDBList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item02,Letterboxd)">Skin.Reset(TMDbHelper.DisableRatings)</value>
+        <value condition="Skin.String(CustomRating.Movies.Item02,MyAnimeList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.Movies.Item02,Awards)">Skin.Reset(TMDbHelper.DisableRatings)</value>
 
         <value condition="Skin.String(CustomRating.TVShows.Item01,TMDb)">Skin.Reset(TMDbHelper.DisableRatings)</value>
@@ -376,6 +388,7 @@
         <value condition="Skin.String(CustomRating.TVShows.Item01,RottenTomatoesUser)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item01,MDBList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item01,Letterboxd)">Skin.Reset(TMDbHelper.DisableRatings)</value>
+        <value condition="Skin.String(CustomRating.TVShows.Item01,MyAnimeList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item01,Awards)">Skin.Reset(TMDbHelper.DisableRatings)</value>
 
         <value condition="Skin.String(CustomRating.TVShows.Item02,TMDb)">Skin.Reset(TMDbHelper.DisableRatings)</value>
@@ -386,6 +399,7 @@
         <value condition="Skin.String(CustomRating.TVShows.Item02,RottenTomatoesUser)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item02,MDBList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item02,Letterboxd)">Skin.Reset(TMDbHelper.DisableRatings)</value>
+        <value condition="Skin.String(CustomRating.TVShows.Item02,MyAnimeList)">Skin.Reset(TMDbHelper.DisableRatings)</value>
         <value condition="Skin.String(CustomRating.TVShows.Item02,Awards)">Skin.Reset(TMDbHelper.DisableRatings)</value>
 
         <value>Skin.SetBool(TMDbHelper.DisableRatings)</value>
