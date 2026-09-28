@@ -21,6 +21,18 @@
                     <!-- Left Side Buttons -->
                     <left>view_pad</left>
                     <right>view_pad</right>
+                    <!-- Red Light (TheRedWizard #1 C418): "next episode ready" hint above the button row, shown
+                         while Red Light has the next episode prepared (redlight.nextep_ready). The next-episode
+                         button (6009) below plays it through Red Light's skip route with no stop. -->
+                    <control type="label">
+                        <centerbottom>150</centerbottom>
+                        <height>40</height>
+                        <left>-20</left>
+                        <font>font_mini_bold</font>
+                        <textcolor>main_fg_90</textcolor>
+                        <label>$INFO[Window(Home).Property(redlight.nextep_ready_label),Next ready: ,]</label>
+                        <visible>Skin.HasSetting(OSD.ShowNextEpisodeButton) + String.IsEqual(Window(Home).Property(redlight.nextep_ready),true)</visible>
+                    </control>
                     <control type="grouplist" id="6091">
                         <centerbottom>80</centerbottom>
                         <height>120</height>
