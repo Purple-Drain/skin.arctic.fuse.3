@@ -437,11 +437,13 @@
             <texture colordiffuse="shadow_back">common/white.png</texture>
         </control>
         <control type="group">
-            <animation type="Conditional" reversible="false" condition="!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))">
+            <!-- #49: HomeSwitcher.FixedHeader pins the vertical menu (icons only, no slide);
+                 Left still moves focus into it. OFF = upstream show/hide on focus. -->
+            <animation type="Conditional" reversible="false" condition="!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) | Skin.HasSetting(HomeSwitcher.FixedHeader)">
                 <effect type="fade" start="0" end="100" time="400" delay="200" tween="cubic" easing="out" />
                 <effect type="slide" tween="cubic" start="0" end="100" time="400" />
             </animation>
-            <animation type="Conditional" reversible="false" condition="String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))">
+            <animation type="Conditional" reversible="false" condition="String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) + !Skin.HasSetting(HomeSwitcher.FixedHeader)">
                 <effect type="fade" end="0" start="100" time="200" tween="cubic" easing="out" />
                 <effect type="slide" tween="cubic" start="100" end="0" time="400" />
             </animation>

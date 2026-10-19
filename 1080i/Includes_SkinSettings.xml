@@ -144,7 +144,6 @@
             <label>$LOCALIZE[31607]</label>
             <selected>Skin.HasSetting(HomeSwitcher.FixedHeader)</selected>
             <onclick>Skin.ToggleSetting(HomeSwitcher.FixedHeader)</onclick>
-            <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
         </include>
     </include>
 
