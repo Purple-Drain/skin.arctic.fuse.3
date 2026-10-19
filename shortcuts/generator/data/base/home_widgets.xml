@@ -44,5 +44,9 @@
         <item>
             <datafile>generator/data/base/home_widgets_standard.xml</datafile>
         </item>
+        <item>
+            <!-- skin.arctic.fuse.3 #51: settle-gated content paths for the rows above. -->
+            <datafile>generator/data/base/home_widgets_paths.xml</datafile>
+        </item>
     </items>
 </contents>
