@@ -18,6 +18,8 @@
 
     <onload>$VAR[Action_RatingsMonitor]</onload>
 
+    <onload condition="Skin.HasSetting(Home.FirstRun) + String.IsEmpty(Window(1198).Property(FirstStart)) + !String.IsEmpty(Skin.String(HomeSwitcher.DefaultHub))">SetProperty(FirstStart,True,1198)</onload>
+    <onload condition="Skin.HasSetting(Home.FirstRun) + String.IsEmpty(Window(1198).Property(FirstStart)) + !String.IsEmpty(Skin.String(HomeSwitcher.DefaultHub))">ReplaceWindow($INFO[Skin.String(HomeSwitcher.DefaultHub)])</onload>
     <onload condition="Skin.HasSetting(Home.FirstRun) + String.IsEmpty(Window(1198).Property(FirstStart))">$VAR[Action_FirstStart_HomeFocus]</onload>
     <onload condition="Skin.HasSetting(Home.FirstRun) + String.IsEmpty(Window(1198).Property(FirstStart))">SetProperty(FirstStart,True,1198)</onload>
 
