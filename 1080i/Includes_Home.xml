@@ -273,7 +273,14 @@
                      already reflects the current item. Re-apply the same default
                      every time the header regains focus, not only on first load. -->
                 <onfocus condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">SetProperty(TMDbHelper.WidgetContainer,301,$PARAM[window])</onfocus>
-                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target))">SetProperty(TMDbHelper.WidgetContainer,501,$PARAM[window])</onfocus>
+                <!-- #61: seed from the first row that has loaded items, not a fixed 501.
+                     Sets nothing new to fetch; falls back to 501 while every row is empty. -->
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + Integer.IsGreater(Container(501).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,501,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + !Integer.IsGreater(Container(501).NumItems,0) + Integer.IsGreater(Container(502).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,502,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + !Integer.IsGreater(Container(501).NumItems,0) + !Integer.IsGreater(Container(502).NumItems,0) + Integer.IsGreater(Container(503).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,503,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + !Integer.IsGreater(Container(501).NumItems,0) + !Integer.IsGreater(Container(502).NumItems,0) + !Integer.IsGreater(Container(503).NumItems,0) + Integer.IsGreater(Container(504).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,504,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + !Integer.IsGreater(Container(501).NumItems,0) + !Integer.IsGreater(Container(502).NumItems,0) + !Integer.IsGreater(Container(503).NumItems,0) + !Integer.IsGreater(Container(504).NumItems,0) + Integer.IsGreater(Container(505).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,505,$PARAM[window])</onfocus>
+                <onfocus condition="String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + !Integer.IsGreater(Container(501).NumItems,0) + !Integer.IsGreater(Container(502).NumItems,0) + !Integer.IsGreater(Container(503).NumItems,0) + !Integer.IsGreater(Container(504).NumItems,0) + !Integer.IsGreater(Container(505).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,501,$PARAM[window])</onfocus>
                 <onfocus condition="$PARAM[overlay]">SetProperty(InfoPanel.FullSwitch,Wall,Home)</onfocus>
                 <onfocus condition="![$PARAM[overlay]]">ClearProperty(InfoPanel.FullSwitch,Home)</onfocus>
                 <onfocus condition="$PARAM[overlay]">SetProperty(Background.ShowOverlay,True,Home)</onfocus>
