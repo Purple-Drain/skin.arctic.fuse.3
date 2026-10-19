@@ -1036,9 +1036,10 @@
                     <param name="width">100</param>
                 </include>
                 <width>auto</width>
-                <!-- icon + label: widen the auto width by the icon slot (30 padding + half of 40 icon + 14 gap) -->
+                <!-- icon + label: the item pitch measured on the Shield is text width + 2 x offset - 40, while the
+                     focus pill is text width + 2 x 57. 82 makes the pitch the pill width + 10, so items no longer overlap. -->
                 <include content="Object_TextOffsetX" condition="$PARAM[use_combo]">
-                    <param name="textoffsetx">57</param>
+                    <param name="textoffsetx">82</param>
                 </include>
                 <centertop>50%</centertop>
                 <texturenofocus />
