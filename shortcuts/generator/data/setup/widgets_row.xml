@@ -142,6 +142,10 @@
     </rules>
     <rules name="widget_visible">
         <rule>
+            <condition>{item_path}==Stacked_Folder</condition>
+            <value>Control.IsVisible({widget_prev_id}) + !String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</value>
+        </rule>
+        <rule>
             <condition>{item_path}&lt;&lt;Stacked_</condition>
             <value>Control.IsVisible({widget_prev_id})</value>
         </rule>
