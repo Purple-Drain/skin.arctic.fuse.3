@@ -385,7 +385,7 @@
                 </control>
                 <control type="grouplist">
                     <top>-100</top>
-                    <include content="Object_Left" condition="Skin.HasSetting(HomeSwitcher.EnableIcons)">
+                    <include content="Object_Left" condition="$EXP[Exp_Home_Menu_IconsOnly]">
                         <param name="left">-10</param>
                     </include>
                     <left>-20</left>
@@ -684,7 +684,9 @@
     </include>
 
     <include name="Home_Object">
-        <param name="use_icons">Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_icons">$EXP[Exp_Home_Menu_IconsOnly]</param>
+        <param name="use_text">!Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_combo">$EXP[Exp_Home_Menu_IconsLabel]</param>
         <definition>
             <control type="group">
                 <top>100</top>
@@ -697,14 +699,14 @@
                         <textcolor>main_fg_30</textcolor>
                         <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
                         <left>30</left>
-                        <visible>![$PARAM[use_icons]] + ![Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))]</visible>
+                        <visible>$PARAM[use_text] + ![Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))]</visible>
                     </control>
                     <control type="label">
                         <font>font_main_bold</font>
                         <textcolor>main_fg_100</textcolor>
                         <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
                         <left>30</left>
-                        <visible>![$PARAM[use_icons]] + Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
+                        <visible>$PARAM[use_text] + Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</visible>
                     </control>
                     <control type="group">
                         <left>10</left>
@@ -724,6 +726,16 @@
                             <texture background="true" colordiffuse="main_fg_100">$VAR[Home_Icon_$PARAM[window]]</texture>
                         </control>
                     </control>
+                    <include content="Home_Item_Combo">
+                        <param name="window">$PARAM[window]</param>
+                        <param name="color">main_fg_30</param>
+                        <param name="visible">$PARAM[use_combo] + ![Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))]</param>
+                    </include>
+                    <include content="Home_Item_Combo">
+                        <param name="window">$PARAM[window]</param>
+                        <param name="color">main_fg_100</param>
+                        <param name="visible">$PARAM[use_combo] + Window.IsVisible($PARAM[window]) + String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</param>
+                    </include>
                 </control>
             </control>
             <include content="Home_Focus_Object">
@@ -743,7 +755,9 @@
     </include>
 
     <include name="Home_Focus_Faker">
-        <param name="use_icons">Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_icons">$EXP[Exp_Home_Menu_IconsOnly]</param>
+        <param name="use_text">!Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_combo">$EXP[Exp_Home_Menu_IconsLabel]</param>
         <definition>
             <control type="group">
                 <left>-480</left>
@@ -759,14 +773,14 @@
                         <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
                         <width>auto</width>
                         <include>Texture_Highlight_Button_FakeFocus_H</include>
-                        <visible>![$PARAM[use_icons]]</visible>
+                        <visible>$PARAM[use_text]</visible>
                     </control>
                     <control type="label">
                         <font>font_main_bold</font>
                         <textcolor>$VAR[ColorSelected]</textcolor>
                         <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
                         <left>30</left>
-                        <visible>![$PARAM[use_icons]]</visible>
+                        <visible>$PARAM[use_text]</visible>
                     </control>
                     <control type="group">
                         <left>10</left>
@@ -780,6 +794,21 @@
                             <texture background="true" colordiffuse="$VAR[ColorSelected]">$VAR[Home_Icon_$PARAM[window]]</texture>
                         </control>
                     </control>
+                    <control type="button">
+                        <font>font_main_bold</font>
+                        <textcolor>00ffffff</textcolor>
+                        <focusedcolor>00ffffff</focusedcolor>
+                        <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
+                        <textoffsetx>57</textoffsetx>
+                        <width>auto</width>
+                        <include>Texture_Highlight_Button_FakeFocus_H</include>
+                        <visible>$PARAM[use_combo]</visible>
+                    </control>
+                    <include content="Home_Item_Combo">
+                        <param name="window">$PARAM[window]</param>
+                        <param name="color">$VAR[ColorSelected]</param>
+                        <param name="visible">$PARAM[use_combo]</param>
+                    </include>
                 </control>
             </control>
         </definition>
@@ -808,7 +837,7 @@
                 <control type="grouplist">
                     <top>-100</top>
                     <include>Home_Reposition</include>
-                    <include content="Object_Left" condition="Skin.HasSetting(HomeSwitcher.EnableIcons)">
+                    <include content="Object_Left" condition="$EXP[Exp_Home_Menu_IconsOnly]">
                         <param name="left">-10</param>
                     </include>
                     <left>-20</left>
@@ -885,7 +914,7 @@
         <height>160</height>
         <centertop>50%</centertop>
         <orientation>horizontal</orientation>
-        <include content="Object_ItemGap" condition="Skin.HasSetting(HomeSwitcher.EnableIcons)">
+        <include content="Object_ItemGap" condition="$EXP[Exp_Home_Menu_IconsOnly]">
             <param name="itemgap">20</param>
         </include>
         <itemgap>0</itemgap>
@@ -928,9 +957,66 @@
         </definition>
     </include>
 
+    <include name="Home_Item_Combo">
+        <param name="color">main_fg_30</param>
+        <param name="visible">true</param>
+        <definition>
+            <control type="grouplist">
+                <left>30</left>
+                <width>600</width>
+                <height>80</height>
+                <orientation>horizontal</orientation>
+                <itemgap>14</itemgap>
+                <visible>$PARAM[visible] + String.IsEqual(Skin.String(HomeSwitcher.IconLabel),after)</visible>
+                <control type="group">
+                    <width>40</width>
+                    <height>80</height>
+                    <control type="image">
+                        <include>Home_Grouplist_Icon_Definition</include>
+                        <texture background="true" colordiffuse="$PARAM[color]">$VAR[Home_Icon_$PARAM[window]]</texture>
+                    </control>
+                </control>
+                <control type="label">
+                    <width min="0" max="560">auto</width>
+                    <height>80</height>
+                    <aligny>center</aligny>
+                    <font>font_main_bold</font>
+                    <textcolor>$PARAM[color]</textcolor>
+                    <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
+                </control>
+            </control>
+            <control type="grouplist">
+                <left>30</left>
+                <width>600</width>
+                <height>80</height>
+                <orientation>horizontal</orientation>
+                <itemgap>14</itemgap>
+                <visible>$PARAM[visible] + String.IsEqual(Skin.String(HomeSwitcher.IconLabel),before)</visible>
+                <control type="label">
+                    <width min="0" max="560">auto</width>
+                    <height>80</height>
+                    <aligny>center</aligny>
+                    <font>font_main_bold</font>
+                    <textcolor>$PARAM[color]</textcolor>
+                    <label>$INFO[Skin.String(HomeSwitcher.$PARAM[window].Name)]</label>
+                </control>
+                <control type="group">
+                    <width>40</width>
+                    <height>80</height>
+                    <control type="image">
+                        <include>Home_Grouplist_Icon_Definition</include>
+                        <texture background="true" colordiffuse="$PARAM[color]">$VAR[Home_Icon_$PARAM[window]]</texture>
+                    </control>
+                </control>
+            </control>
+        </definition>
+    </include>
+
     <include name="Home_Spacer">
         <param name="visible">true</param>
-        <param name="use_icons">Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_icons">$EXP[Exp_Home_Menu_IconsOnly]</param>
+        <param name="use_text">!Skin.HasSetting(HomeSwitcher.EnableIcons)</param>
+        <param name="use_combo">$EXP[Exp_Home_Menu_IconsLabel]</param>
         <definition>
             <control type="button">
                 <left>-560</left>
@@ -943,6 +1029,10 @@
                     <param name="width">100</param>
                 </include>
                 <width>auto</width>
+                <!-- icon + label: widen the auto width by the icon slot (30 padding + half of 40 icon + 14 gap) -->
+                <include content="Object_TextOffsetX" condition="$PARAM[use_combo]">
+                    <param name="textoffsetx">57</param>
+                </include>
                 <centertop>50%</centertop>
                 <texturenofocus />
                 <texturefocus />
