@@ -1,0 +1,3 @@
+<variable name="Hub_Path_{widget_guid}">
+    <value condition="!String.IsEmpty(Window.Property(TMDbHelper.Settled))">{widget_path}</value>
+</variable>

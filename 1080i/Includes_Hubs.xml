@@ -37,6 +37,20 @@
             <onload condition="String.IsEmpty(Window(1107).Property(TMDbHelper.WidgetContainer))">SetProperty(TMDbHelper.WidgetContainer,501,1107)</onload>
             <onload condition="String.IsEmpty(Window(1108).Property(TMDbHelper.WidgetContainer))">SetProperty(TMDbHelper.WidgetContainer,501,1108)</onload>
 
+            <!-- #51: hub rows read their paths from Hub_Path_* variables, empty until
+                 TMDbHelper.Settled is set on this window, so a hub only passed on the
+                 hub bar never starts its widget jobs. Kodi allocates the window's
+                 containers (and fires their jobs) before onload runs, so Settled is
+                 cleared on unload, not here. Entered from the hub bar: settle after
+                 a pause (TMDb Helper sets it after TMDbHelper.SettleDelay ms; the
+                 1 s alarm is the fallback when its service is off). Entered any other
+                 way (startup, back from a video): settle at once. -->
+            <onload>SetProperty(TMDbHelper.SettleDelay,400)</onload>
+            <onload condition="$EXP[Exp_Hubs_FromHubBar]">AlarmClock(HubSettle,SetProperty(TMDbHelper.Settled,True,$PARAM[window_id]),00:01,silent)</onload>
+            <onload condition="!$EXP[Exp_Hubs_FromHubBar]">SetProperty(TMDbHelper.Settled,True)</onload>
+            <onunload>CancelAlarm(HubSettle,true)</onunload>
+            <onunload>ClearProperty(TMDbHelper.Settled)</onunload>
+
             <menucontrol>300</menucontrol>
 
             <include content="Object_DefaultControl" condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window_id].Toggle))">
@@ -625,6 +639,16 @@
         <value condition="Control.IsVisible(510)">SetFocus(510)</value>
     </variable>
 
+    <!-- #51: the spotlight path, empty until the hub has settled (see Hub_Onload). -->
+    <variable name="Hub_Spotlight_Path">
+        <value condition="String.IsEmpty(Window.Property(TMDbHelper.Settled))" />
+        <value condition="Window.IsActive(1101)">$INFO[Skin.String(HomeSwitcher.1101.Spotlight.Path)]</value>
+        <value condition="Window.IsActive(1102)">$INFO[Skin.String(HomeSwitcher.1102.Spotlight.Path)]</value>
+        <value condition="Window.IsActive(1103)">$INFO[Skin.String(HomeSwitcher.1103.Spotlight.Path)]</value>
+        <value condition="Window.IsActive(1104)">$INFO[Skin.String(HomeSwitcher.1104.Spotlight.Path)]</value>
+        <value>$INFO[Skin.String(HomeSwitcher.Home.Spotlight.Path)]</value>
+    </variable>
+
     <include name="Hub_Spotlight_List">
         <param name="window">Home</param>
         <definition>
@@ -772,7 +796,7 @@
             <!-- Spotlight List -->
             <include content="Hub_Spotlight_List" condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)) + $PARAM[spotlight]">
                 <param name="window">$PARAM[window]</param>
-                <param name="content">$INFO[Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Path)]</param>
+                <param name="content">$VAR[Hub_Spotlight_Path]</param>
                 <param name="sortby">$INFO[Skin.String(HomeSwitcher.$PARAM[window].Spotlight.SortMethod)]</param>
                 <param name="sortorder">$INFO[Skin.String(HomeSwitcher.$PARAM[window].Spotlight.SortOrder)]</param>
                 <param name="target">$INFO[Skin.String(HomeSwitcher.$PARAM[window].Spotlight.Target)]</param>

@@ -1,0 +1,19 @@
+<contents>
+    <!-- skin.arctic.fuse.3 #51: one top-level variable per hub widget holding its
+         content path, empty until the hub has settled (TMDbHelper.Settled on the
+         hub window). Kodi fires a CDirectoryProvider job for every container with
+         a non-empty path when the window loads, hidden or not, so the path itself
+         is what has to stay empty while a hub is only being passed on the bar.
+         A variable value (unlike a $VAR prefix) keeps commas and $INFO[] intact. -->
+    <template>generator/data/parts/basic_variables.xmltemplate</template>
+    <value name="comments">Hub widget paths, gated on TMDbHelper.Settled (#51)</value>
+    <value name="includes_part">
+        <items menu="{item}">
+            <item>
+                <template>generator/data/parts/widgets_path_variable.xmltemplate</template>
+                <datafile>generator/data/setup/widgets_row.xml</datafile>
+                <condition>{item_disabled}!=True</condition>
+            </item>
+        </items>
+    </value>
+</contents>
