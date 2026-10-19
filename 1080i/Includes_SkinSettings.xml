@@ -32,6 +32,18 @@
             <selected>!Skin.HasSetting(HomeSwitcher.DisableFirstWidgetFocus)</selected>
         </include>
 
+        <include content="Settings_Button" description="Default hub">
+            <param name="dialog">false</param>
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">014</param>
+            <param name="dialog">false</param>
+            <param name="control">button</param>
+            <label>Default hub</label>
+            <label2>$VAR[Label_Setting_DefaultHub]</label2>
+            <onclick>Skin.SetString(HomeSwitcher.DefaultHub,$VAR[Setting_DefaultHub_Next])</onclick>
+        </include>
+
         <include content="Settings_Label" description="Menu">
             <param name="window">skinsettings</param>
             <param name="baseid">$PARAM[baseid]</param>
