@@ -11,6 +11,7 @@
     <include name="Object_CenterBottom"><centerbottom>$PARAM[centerbottom]</centerbottom></include>
     <include name="Object_BorderSize"><bordersize>$PARAM[bordersize]</bordersize></include>
     <include name="Object_Height"><height>$PARAM[height]</height></include>
+    <include name="Object_TextOffsetX"><textoffsetx>$PARAM[textoffsetx]</textoffsetx></include>
     <include name="Object_Width"><width>$PARAM[width]</width></include>
     <include name="Object_Font"><font>$PARAM[font]</font></include>
     <include name="Object_Scroll"><scroll>$PARAM[scroll]</scroll></include>

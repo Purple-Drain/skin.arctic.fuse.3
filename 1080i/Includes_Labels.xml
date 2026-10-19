@@ -662,6 +662,8 @@
     </variable>
 
     <variable name="Label_Setting_HomeIcons">
+        <value condition="Skin.HasSetting(HomeSwitcher.EnableIcons) + String.IsEqual(Skin.String(HomeSwitcher.IconLabel),after)">Icons + text</value>
+        <value condition="Skin.HasSetting(HomeSwitcher.EnableIcons) + String.IsEqual(Skin.String(HomeSwitcher.IconLabel),before)">Text + icons</value>
         <value condition="Skin.HasSetting(HomeSwitcher.EnableIcons)">$LOCALIZE[536]</value>
         <value>$LOCALIZE[31329]</value>
     </variable>
