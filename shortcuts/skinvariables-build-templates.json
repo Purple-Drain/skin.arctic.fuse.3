@@ -3,6 +3,15 @@
         "skinstring_lastbuildtime": "Skin.String(Shortcuts.RebuildDateTime)"
     },
     "actions": [
-        "route=action=buildtemplate&background=false&lastbuildtime={skinstring_lastbuildtime}"
+        [{
+            "rules": ["String.IsEmpty(Window(Home).Property(SV.Building))"],
+            "value": [
+                "SetProperty(SV.Building,1,Home)",
+                "AlarmClock(SVBuildingClear,ClearProperty(SV.Building,Home),01:00,silent)",
+                "route=action=buildtemplate&background=false&lastbuildtime={skinstring_lastbuildtime}",
+                "CancelAlarm(SVBuildingClear,true)",
+                "ClearProperty(SV.Building,Home)"
+            ]
+        }]
     ]
 }
