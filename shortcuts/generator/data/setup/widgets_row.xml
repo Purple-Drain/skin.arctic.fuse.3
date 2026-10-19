@@ -21,7 +21,7 @@
     <rules name="widget_label">
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value>$INFO[Window.Property(WidgetMeta.{widget_prev_id}.Label)]</value>
+            <value>$INFO[Container({widget_prev_id}).ListItem.Label]</value>
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Movie_Recommendations</condition>
@@ -63,7 +63,7 @@
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value>$INFO[Window.Property(WidgetMeta.{widget_prev_id}.FolderPath)]</value>
+            <value>$INFO[Container({widget_prev_id}).ListItem.FolderPath]</value>
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Movie_Recommendations</condition>
