@@ -32,6 +32,18 @@
             <selected>!Skin.HasSetting(HomeSwitcher.DisableFirstWidgetFocus)</selected>
         </include>
 
+        <include content="Settings_Button" description="Default hub">
+            <param name="dialog">false</param>
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">014</param>
+            <param name="dialog">false</param>
+            <param name="control">button</param>
+            <label>Default hub</label>
+            <label2>$VAR[Label_Setting_DefaultHub]</label2>
+            <onclick>Skin.SetString(HomeSwitcher.DefaultHub,$VAR[Setting_DefaultHub_Next])</onclick>
+        </include>
+
         <include content="Settings_Label" description="Menu">
             <param name="window">skinsettings</param>
             <param name="baseid">$PARAM[baseid]</param>
@@ -58,7 +70,12 @@
             <param name="control">button</param>
             <label>$LOCALIZE[480]</label>
             <label2>$VAR[Label_Setting_HomeIcons]</label2>
-            <onclick>Skin.ToggleSetting(HomeSwitcher.EnableIcons)</onclick>
+            <!-- cycle: Text, Icons, Icons + text, Text + icons. Conditions read the state before the click. -->
+            <onclick condition="!Skin.HasSetting(HomeSwitcher.EnableIcons)">Skin.SetBool(HomeSwitcher.EnableIcons)</onclick>
+            <onclick condition="$EXP[Exp_Home_Menu_IconsOnly]">Skin.SetString(HomeSwitcher.IconLabel,after)</onclick>
+            <onclick condition="String.IsEqual(Skin.String(HomeSwitcher.IconLabel),after)">Skin.SetString(HomeSwitcher.IconLabel,before)</onclick>
+            <onclick condition="String.IsEqual(Skin.String(HomeSwitcher.IconLabel),before)">Skin.Reset(HomeSwitcher.IconLabel)</onclick>
+            <onclick condition="String.IsEqual(Skin.String(HomeSwitcher.IconLabel),before)">Skin.Reset(HomeSwitcher.EnableIcons)</onclick>
             <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
         </include>
         <include content="Settings_Button" description="Header">
@@ -127,7 +144,6 @@
             <label>$LOCALIZE[31607]</label>
             <selected>Skin.HasSetting(HomeSwitcher.FixedHeader)</selected>
             <onclick>Skin.ToggleSetting(HomeSwitcher.FixedHeader)</onclick>
-            <visible>!Skin.HasSetting(HomeSwitcher.Vertical)</visible>
         </include>
     </include>
 

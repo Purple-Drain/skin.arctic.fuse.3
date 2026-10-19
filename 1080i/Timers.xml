@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timers>
+    <!-- #61: Home_Control's onfocus picks the first of rows 501-505 that has items, but only once,
+         at the moment the hub bar gains focus. If no row has loaded yet (the #51 settle gate holds
+         paths empty), it falls back to 501, which can stay empty (Home), leaving the panel blank.
+         This re-runs the pick when a later row fills while the panel still points at an empty 501.
+         Kodi checks start/stop every frame (SkinTimerManager::Process); stop re-arms it. -->
+    <timer>
+        <name>Hub_InfoPanel_Repick</name>
+        <start>Control.HasFocus(300) + Integer.IsEqual(Window.Property(TMDbHelper.WidgetContainer),501) + !Integer.IsGreater(Container(501).NumItems,0) + !Container(501).IsUpdating + [Integer.IsGreater(Container(502).NumItems,0) | Integer.IsGreater(Container(503).NumItems,0) | Integer.IsGreater(Container(504).NumItems,0) | Integer.IsGreater(Container(505).NumItems,0)]</start>
+        <stop>![Control.HasFocus(300) + Integer.IsEqual(Window.Property(TMDbHelper.WidgetContainer),501) + !Integer.IsGreater(Container(501).NumItems,0) + !Container(501).IsUpdating + [Integer.IsGreater(Container(502).NumItems,0) | Integer.IsGreater(Container(503).NumItems,0) | Integer.IsGreater(Container(504).NumItems,0) | Integer.IsGreater(Container(505).NumItems,0)]]</stop>
+        <onstart condition="Integer.IsGreater(Container(502).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,502)</onstart>
+        <onstart condition="!Integer.IsGreater(Container(502).NumItems,0) + Integer.IsGreater(Container(503).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,503)</onstart>
+        <onstart condition="!Integer.IsGreater(Container(502).NumItems,0) + !Integer.IsGreater(Container(503).NumItems,0) + Integer.IsGreater(Container(504).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,504)</onstart>
+        <onstart condition="!Integer.IsGreater(Container(502).NumItems,0) + !Integer.IsGreater(Container(503).NumItems,0) + !Integer.IsGreater(Container(504).NumItems,0) + Integer.IsGreater(Container(505).NumItems,0)">SetProperty(TMDbHelper.WidgetContainer,505)</onstart>
+    </timer>
+</timers>

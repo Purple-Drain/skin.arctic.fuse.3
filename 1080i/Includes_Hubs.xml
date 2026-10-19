@@ -711,8 +711,10 @@
     </include>
 
     <include name="Hub_Window_Side_Slide">
+        <!-- #49: HomeSwitcher.FixedHeader also pins the vertical menu, so hub content
+             stays shifted right of it instead of sliding back when focus leaves. -->
         <include content="Hub_Window_Side_Slide_Animation" condition="Skin.HasSetting(HomeSwitcher.Vertical)">
-            <param name="visible">!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible))</param>
+            <param name="visible">!String.IsEmpty(Window(Home).Property(HomeSwitcher.IsVisible)) | Skin.HasSetting(HomeSwitcher.FixedHeader)</param>
             <param name="windowclose">false</param>
             <param name="windowopen">false</param>
         </include>
