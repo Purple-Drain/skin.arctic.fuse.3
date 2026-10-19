@@ -1036,6 +1036,11 @@
                     <param name="width">100</param>
                 </include>
                 <width>auto</width>
+                <!-- text only: the item pitch measured on the Shield is text width + 2 x offset - 40, while the
+                     focus pill is text width + 60. 60 makes the pitch the pill width + 20, so Text mode is no longer cramped. -->
+                <include content="Object_TextOffsetX" condition="$PARAM[use_text]">
+                    <param name="textoffsetx">60</param>
+                </include>
                 <!-- icon + label: the item pitch measured on the Shield is text width + 2 x offset - 40, while the
                      focus pill is text width + 2 x 57. 82 makes the pitch the pill width + 10, so items no longer overlap. -->
                 <include content="Object_TextOffsetX" condition="$PARAM[use_combo]">
