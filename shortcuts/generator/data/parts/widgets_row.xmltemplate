@@ -21,6 +21,7 @@
 
     <include content="Widget_NoResults">
         <param name="id">{widget_id}</param>
+        <param name="waiting">{widget_waiting}</param>
     </include>
 
     <content sortby="{widget_sortby}" sortorder="{widget_sortorder}" target="{widget_target}" limit="{widget_limit}" browse="$VAR[Defs_BrowseLimitedLists]">$VAR[Hub_Path_{widget_guid}]</content>
