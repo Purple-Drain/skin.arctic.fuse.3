@@ -142,10 +142,6 @@
     </rules>
     <rules name="widget_visible">
         <rule>
-            <condition>{item_path}==Stacked_Folder</condition>
-            <value>Control.IsVisible({widget_prev_id}) + !String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</value>
-        </rule>
-        <rule>
             <condition>{item_path}&lt;&lt;Stacked_</condition>
             <value>Control.IsVisible({widget_prev_id})</value>
         </rule>
@@ -175,7 +171,21 @@
         </rule>
     </rules>
     <value name="widget_detailed">False</value>
+    <rules name="widget_waiting">
+        <rule>
+            <condition>{item_path}==Stacked_Folder</condition>
+            <value>String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</value>
+        </rule>
+        <rule>
+            <condition>True</condition>
+            <value>false</value>
+        </rule>
+    </rules>
     <rules name="widget_custom_content">
+        <rule>
+            <condition>{item_path}==Stacked_Folder</condition>
+            <value><![CDATA[<include content="Widget_Waiting"><param name="waiting">String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</param></include>]]></value>
+        </rule>
         <rule>
             <condition>{item_path}==Weather</condition>
             <value><![CDATA[<include>Weather_Details_HighLow_Items</include>]]></value>
