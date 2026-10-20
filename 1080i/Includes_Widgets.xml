@@ -64,7 +64,7 @@
                 <param name="groupid">$PARAM[groupid]</param>
                 <param name="label">$PARAM[label]</param>
                 <param name="id">$PARAM[id]</param>
-                <param name="visible">[Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]] + $PARAM[visible]</param>
+                <param name="visible">[Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Window] | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]] + $PARAM[visible]</param>
                 <param name="busy_visible">[Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | $PARAM[busy_isupdating]] + $PARAM[busy_visible]</param>
                 <param name="usewidgetlabel">$PARAM[usewidgetlabel]</param>
                 <param name="labelvisible">$PARAM[labelvisible]</param>
@@ -98,8 +98,8 @@
                 <top>$PARAM[widgettop]</top>
                 <height>$PARAM[widgetheight]</height>
                 <animation effect="fade" start="100" end="0" time="0" condition="[Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | $PARAM[busy_isupdating]] + $PARAM[busy_visible]">Conditional</animation>
-                <!-- #51: Exp_Hub_Unsettled keeps a held-empty hub row visible. No Results is held back while unsettled, so without this the row has 0 items, hides, and Kodi stops polling its path -->
-                <visible>$PARAM[visible] + [Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]]</visible>
+                <!-- #51: on a hub window the row never hides for 0 items. Kodi re-reads visibility before it re-reads the path, so a row that hides the frame Settled flips never fetches (seen 21.10.26). A truly empty row shows No Results as before -->
+                <visible>$PARAM[visible] + [Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Window] | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]]</visible>
 
                 <onfocus condition="!$EXP[Exp_InfoDialogs] + $PARAM[widget_hideartwork]">SetProperty(Background.HideArtwork,True)</onfocus>
                 <onfocus condition="$EXP[Exp_InfoDialogs] + $PARAM[widget_hideartwork]">SetProperty(Background.DialogInfo.HideArtwork,True,Home)</onfocus>
