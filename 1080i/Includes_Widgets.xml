@@ -98,7 +98,7 @@
                 <top>$PARAM[widgettop]</top>
                 <height>$PARAM[widgetheight]</height>
                 <animation effect="fade" start="100" end="0" time="0" condition="[Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | $PARAM[busy_isupdating]] + $PARAM[busy_visible]">Conditional</animation>
-                <!-- #51: Exp_Hub_Unsettled keeps a held-empty hub row visible; Kodi never polls a hidden container's path -->
+                <!-- #51: Exp_Hub_Unsettled keeps a held-empty hub row visible. No Results is held back while unsettled, so without this the row has 0 items, hides, and Kodi stops polling its path -->
                 <visible>$PARAM[visible] + [Container($PARAM[id]).IsUpdating | $EXP[Exp_Hub_Unsettled] | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]]</visible>
 
                 <onfocus condition="!$EXP[Exp_InfoDialogs] + $PARAM[widget_hideartwork]">SetProperty(Background.HideArtwork,True)</onfocus>
