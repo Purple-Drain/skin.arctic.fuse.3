@@ -643,6 +643,7 @@
     </include>
 
     <include name="_Widget_NoResults">
+        <param name="waiting">false</param>
         <content>
             <item>
                 <label>$LOCALIZE[31046]</label>
@@ -656,14 +657,33 @@
                      The second count clause is not redundant — once this item is showing it is
                      the container's only item, so NumItems is 1 rather than 0 and the first
                      clause alone would immediately hide it again. -->
-                <visible>!Container($PARAM[id]).IsUpdating + [Integer.IsEqual(Container($PARAM[id]).NumItems,0) | [Integer.IsEqual(Container($PARAM[id]).NumItems,1) + String.IsEqual(Container($PARAM[id]).ListItemAbsolute(0).Label,$LOCALIZE[31046])]]</visible>
+                <visible>!$PARAM[waiting] + !Container($PARAM[id]).IsUpdating + [Integer.IsEqual(Container($PARAM[id]).NumItems,0) | [Integer.IsEqual(Container($PARAM[id]).NumItems,1) + String.IsEqual(Container($PARAM[id]).ListItemAbsolute(0).Label,$LOCALIZE[31046])]]</visible>
             </item>
         </content>
     </include>
 
     <include name="Widget_NoResults">
-        <include content="_Widget_NoResults" condition="!Skin.HasSetting(Widgets.DisableNoResultsItem) + !Window.IsVisible(1105)">
-            <param name="id">$PARAM[id]</param>
-        </include>
+        <param name="waiting">false</param>
+        <definition>
+            <include content="_Widget_NoResults" condition="!Skin.HasSetting(Widgets.DisableNoResultsItem) + !Window.IsVisible(1105)">
+                <param name="id">$PARAM[id]</param>
+                <param name="waiting">$PARAM[waiting]</param>
+            </include>
+        </definition>
+    </include>
+
+    <!-- Placeholder for a row whose path comes from another row that has not loaded yet
+         (Stacked Folder before the row above has items, #53). Shown instead of No Results,
+         so the row keeps its place rather than popping in later. -->
+    <include name="Widget_Waiting">
+        <content>
+            <item>
+                <label>$LOCALIZE[31023]</label>
+                <property name="override_square">fallback/no-results-square.png</property>
+                <property name="override_poster">fallback/no-results-poster.png</property>
+                <property name="override_landscape">fallback/no-results-landscape.png</property>
+                <visible>$PARAM[waiting]</visible>
+            </item>
+        </content>
     </include>
 </includes>
