@@ -37,6 +37,16 @@
             <onload condition="String.IsEmpty(Window(1107).Property(TMDbHelper.WidgetContainer))">SetProperty(TMDbHelper.WidgetContainer,501,1107)</onload>
             <onload condition="String.IsEmpty(Window(1108).Property(TMDbHelper.WidgetContainer))">SetProperty(TMDbHelper.WidgetContainer,501,1108)</onload>
 
+            <!-- #76: with the start-up wait off (Startup.DisableWaitForLoad), the splash
+                 (dialog 1198, set by skinvariables-startup.json) clears here, on the landing
+                 window's first frame, instead of from the Python script Home.xml used to run
+                 (about 2.3 s on the Shield: interpreter start plus a 0.5 s sleep). The landing
+                 window is Home, or the default hub: Home.xml sets FirstStart on 1198 before
+                 its ReplaceWindow, so on that first pass Home skips the clear and the hub does
+                 it, and no frame of Home shows before the hub. -->
+            <onload condition="Skin.HasSetting(Startup.DisableWaitForLoad) + [String.IsEmpty(Skin.String(HomeSwitcher.DefaultHub)) | !Skin.HasSetting(Home.FirstRun) | !String.IsEmpty(Window(1198).Property(FirstStart))]">ClearProperty(SplashIsVisible,1198)</onload>
+            <onload condition="Skin.HasSetting(Startup.DisableWaitForLoad) + [String.IsEmpty(Skin.String(HomeSwitcher.DefaultHub)) | !Skin.HasSetting(Home.FirstRun) | !String.IsEmpty(Window(1198).Property(FirstStart))]">CancelAlarm(SplashTimeOut,silent)</onload>
+
             <menucontrol>300</menucontrol>
 
             <include content="Object_DefaultControl" condition="!String.IsEmpty(Skin.String(HomeSwitcher.$PARAM[window_id].Toggle))">
