@@ -7,7 +7,7 @@
      False for them, so the condition is always true. -->
 <include content="Hub_Combined_Widget" condition="!{widget_is_custom_submenu} | !Skin.HasSetting(Widgets.StaticSubmenuTiles)">
     <param name="id">{widget_id}</param>
-    <param name="content">$VAR[Hub_Path_{widget_guid}]</param>
+    <param name="content">{widget_path}</param>
     <param name="include">{widget_include}</param>
     <param name="target">{widget_target}</param>
     <param name="sortby">{widget_sortby}</param>

@@ -1,6 +1,6 @@
 <include content="Hub_Wall_Widget">
     <param name="id">{widget_id}</param>
-    <param name="content">$VAR[Hub_Path_{widget_guid}]</param>
+    <param name="content">{widget_path}</param>
     <param name="include">{widget_include}</param>
     <param name="target">{widget_target}</param>
     <param name="sortby">{widget_sortby}</param>
