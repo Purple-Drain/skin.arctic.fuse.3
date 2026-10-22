@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <onload>RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/skinvariables-splash.json,use_rules=True)</onload>
+    <!-- #76: the splash wait script only runs when the start-up wait is on. With it off
+         the splash clears in XML from Hub_Onload (the landing window), so no Python
+         process sits on the start-up path. SplashWait caps the script's 0.2 s poll loop:
+         each pass is a nested call inside skinvariables, and the 59 s SplashTimeOut
+         alarm alone would let it recurse past Python's limit. -->
+    <onload condition="!Skin.HasSetting(Startup.DisableWaitForLoad)">AlarmClock(SplashWait,noop,00:30,silent)</onload>
+    <onload condition="!Skin.HasSetting(Startup.DisableWaitForLoad)">RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/skinvariables-splash.json,use_rules=True)</onload>
     <include>Action_BuildViews</include>
     <onload>Skin.SetString(TMDbHelper.Corner.Radius,20)</onload>
     <onload>Skin.SetString(TMDbHelper.UseLocalWindowIDs,10000|11101|11102|11103|11104|11105|11106|11107|11108|11109)</onload>
