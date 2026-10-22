@@ -224,6 +224,16 @@
             <onclick>SetProperty(CustomDialogSettingsItems,DialogCustom_Settings_Items_BackgroundStyle,Home)</onclick>
             <onclick>ActivateWindow(1118)</onclick>
         </include>
+        <include content="Settings_Button" description="Background style">
+            <param name="window">skinsettings</param>
+            <param name="baseid">$PARAM[baseid]</param>
+            <param name="id">010</param>
+            <param name="control">button</param>
+            <label>$LOCALIZE[31268]</label>
+            <label2>$VAR[Label_Setting_BackgroundStyle]</label2>
+            <onclick>Skin.ToggleSetting(Info.EnableStylisedBackgrounds)</onclick>
+            <include>Action_Blur_ClearContentFallbacks_Onclick</include>
+        </include>
         <include content="Settings_Button" description="Ratings">
             <param name="dialog">false</param>
             <param name="window">skinsettings</param>
@@ -524,18 +534,6 @@
             <onclick>Skin.ToggleSetting(Navigation.DisableAlphabetJump)</onclick>
         </include>
 
-        <include content="Settings_Button" description="OnCategories">
-            <param name="dialog">false</param>
-            <param name="window">skinsettings</param>
-            <param name="baseid">$PARAM[baseid]</param>
-            <param name="id">031</param>
-            <param name="control">button</param>
-            <param name="slevel">2</param>
-            <label>$LOCALIZE[31324] > $LOCALIZE[31150]</label>
-            <label2>$VAR[Label_Settings_NavigationOnCategories]</label2>
-            <onclick>Skin.ToggleSetting(Navigation.DisableCategoriesSelectDialog)</onclick>
-        </include>
-
         <include content="Settings_Label" description="Labels">
             <param name="window">skinsettings</param>
             <param name="baseid">$PARAM[baseid]</param>
@@ -646,6 +644,8 @@
             <selected>!Skin.HasSetting(Background.DisableVideo)</selected>
             <onclick>Skin.ToggleSetting(Background.DisableVideo)</onclick>
         </include>
+
+
     </include>
 
     <!-- Details -->
