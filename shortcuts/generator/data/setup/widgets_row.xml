@@ -21,7 +21,7 @@
     <rules name="widget_label">
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value>$INFO[Container({widget_prev_id}).ListItem.Label]</value>
+            <value>$INFO[Container({widget_prev_id}).ListItemAbsolute(0).Label]</value>
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Movie_Recommendations</condition>
@@ -63,7 +63,7 @@
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value>$INFO[Container({widget_prev_id}).ListItem.FolderPath]</value>
+            <value>$INFO[Container({widget_prev_id}).ListItemAbsolute(0).FolderPath]</value>
         </rule>
         <rule>
             <condition>{item_path}==Stacked_Movie_Recommendations</condition>
@@ -174,7 +174,7 @@
     <rules name="widget_waiting">
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value>String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</value>
+            <value>String.IsEmpty(Container({widget_prev_id}).ListItemAbsolute(0).FolderPath)</value>
         </rule>
         <rule>
             <condition>True</condition>
@@ -184,7 +184,7 @@
     <rules name="widget_custom_content">
         <rule>
             <condition>{item_path}==Stacked_Folder</condition>
-            <value><![CDATA[<include content="Widget_Waiting"><param name="waiting">String.IsEmpty(Container({widget_prev_id}).ListItem.FolderPath)</param></include>]]></value>
+            <value><![CDATA[<include content="Widget_Waiting"><param name="waiting">String.IsEmpty(Container({widget_prev_id}).ListItemAbsolute(0).FolderPath)</param></include>]]></value>
         </rule>
         <rule>
             <condition>{item_path}==Weather</condition>
