@@ -60,8 +60,9 @@ SKIP_DIRS = {'.git', '.github', '.claude', 'tools', 'dist', '__pycache__', 'andr
 SKIP_FILES = {'CLAUDE.md', '.gitattributes', '.gitignore', '.DS_Store', 'Thumbs.db'}
 SKIP_SUFFIXES = ('.pyc', '.pyo', '.xcf', '~', '.sublime-snippet', '.sublime-project', '.sublime-workspace')
 # Files Kodi generates at runtime; upstream gitignores them and a clone never has them,
-# but keep the guard so a local build from a used skin dir stays clean.
-SKIP_PATTERNS = (re.compile(r'^1080i/script-skinvariables-generator-includes.*\.xml$'),
+# but keep the guard so a local build from a used skin dir stays clean. The default-profile
+# generator include (generator-includes-.xml) is the exception: it is shipped (#67).
+SKIP_PATTERNS = (re.compile(r'^1080i/script-skinvariables-generator-includes(?!-\.xml$).*\.xml$'),
                  re.compile(r'^1080i/script-skinvariables-skinusers\.xml$'),
                  re.compile(r'^1080i/script-skinshortcuts-includes\.xml$'))
 
