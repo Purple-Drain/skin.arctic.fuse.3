@@ -1,3 +1,5 @@
+AGENTS.md
+/tools/
 1080i/script-skinvariables-generator-includes*.xml
 # #67: the default-profile build is shipped, refreshed from the Shield by tools/refresh-generated-include.sh
 !1080i/script-skinvariables-generator-includes-.xml
