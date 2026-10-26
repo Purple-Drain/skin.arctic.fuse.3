@@ -2,10 +2,7 @@
 <window>
     <!-- #76: the splash wait script only runs when the start-up wait is on. With it off
          the splash clears in XML from Hub_Onload (the landing window), so no Python
-         process sits on the start-up path. SplashWait caps the script's 0.2 s poll loop:
-         each pass is a nested call inside skinvariables, and the 59 s SplashTimeOut
-         alarm alone would let it recurse past Python's limit. -->
-    <onload condition="!Skin.HasSetting(Startup.DisableWaitForLoad)">AlarmClock(SplashWait,noop,00:30,silent)</onload>
+         process sits on the start-up path. The script itself is upstream's (#85, C4). -->
     <onload condition="!Skin.HasSetting(Startup.DisableWaitForLoad)">RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/skinvariables-splash.json,use_rules=True)</onload>
     <include>Action_BuildViews</include>
     <onload>Skin.SetString(TMDbHelper.Corner.Radius,20)</onload>
