@@ -30,7 +30,10 @@ import urllib.request
 # jurialmunkey's repo publishes is bundled at his latest version, unmodified, so an upstream sync
 # that raises a minimum (or adds a new jurialmunkey dependency) is covered without editing this file.
 # Dependencies he does not publish (Kodi built-ins, official-repo resource packs) are left alone.
-UPSTREAM_REPO = 'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/'
+# He publishes from two indexes: nexusrepo (scripts, fonts) and repo (resource packs such as
+# resource.images.arctic.splash, added as a skin import in 3.4.x; kodi-shield-config #233).
+UPSTREAM_REPOS = ('https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/',
+                  'https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/')
 # Ids never bundled even if upstream publishes them: add-ons we fork and publish ourselves.
 NEVER_BUNDLE = {'plugin.video.themoviedb.helper'}
 
@@ -42,16 +45,21 @@ def _version_tuple(v):
 def resolve_bundled_deps():
     skin = ET.parse(os.path.join(ROOT, 'addon.xml')).getroot()
     wanted = {i.get('addon'): i.get('version') for i in skin.iter('import')}
-    index = ET.fromstring(urllib.request.urlopen(UPSTREAM_REPO + 'addons.xml', timeout=60).read())
-    upstream = {a.get('id'): a.get('version') for a in index.iter('addon')}
+    upstream = {}
+    for base in UPSTREAM_REPOS:
+        index = ET.fromstring(urllib.request.urlopen(base + 'addons.xml', timeout=60).read())
+        for a in index.iter('addon'):
+            seen = upstream.get(a.get('id'))
+            if not seen or _version_tuple(a.get('version')) > _version_tuple(seen[0]):
+                upstream[a.get('id')] = (a.get('version'), base)
     deps = []
     for dep_id, minimum in sorted(wanted.items()):
         if dep_id in NEVER_BUNDLE or dep_id not in upstream:
             continue
-        latest = upstream[dep_id]
+        latest, base = upstream[dep_id]
         if minimum and _version_tuple(latest) < _version_tuple(minimum):
             sys.exit('%s: skin needs %s but upstream only has %s' % (dep_id, minimum, latest))
-        deps.append((dep_id, latest, '%s%s/%s-%s.zip' % (UPSTREAM_REPO, dep_id, dep_id, latest)))
+        deps.append((dep_id, latest, '%s%s/%s-%s.zip' % (base, dep_id, dep_id, latest)))
     return deps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
